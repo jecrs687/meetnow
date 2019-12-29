@@ -3,6 +3,8 @@ import FlipCard from 'react-native-flip-card'
 import { Ionicons,FontAwesome,MaterialCommunityIcons} from '@expo/vector-icons';
 import {Button,PanResponder,AsyncStorage,View,Text,SafeAreaView, Image, StyleSheet, TouchableOpacity, Dimensions,StatusBar, ScrollView} from 'react-native';
 var width=Dimensions.get('window').width;
+import Carousel,{Pagination} from 'react-native-snap-carousel';
+
 import Swiper from 'react-native-swiper'
 
 var height=Dimensions.get('window').height;
@@ -18,37 +20,57 @@ export class UserCard extends React.Component {
       user:this.props.user,
       isFlipped: false,
       handlelike:false,
+      activeSlide:0,
       handledeslike:false,
     };
   }
-  
-  
-  listFotos(){
-    var fotos= this.props.user.fotos;
-    var lista=[];
-    Object.entries(fotos).forEach(
-        ([key, value]) => {
+
+  fotos(){   var lista=[]; 
+    Object.entries(this.props.user.fotos).forEach(
+   ([key, value]) => {
             lista.push(value)
         }
-    );
+    );console.log(lista);
+    return(lista)}
+
+    get pagination () {
+      const { entries, activeSlide } = this.state;
+      return (
+          <Pagination
+            dotsLength={this.fotos().length}
+            activeDotIndex={activeSlide}
+            containerStyle={{
+              
+            }}
+            dotStyle={{
+                width: 10,
+                height: 10,
+                borderRadius: 5,
+                marginHorizontal: 1,
+                backgroundColor: '#687'
+            }}
+            inactiveDotStyle={{
+                marginHorizontal: 1,
+                    }}
+            inactiveDotOpacity={0.4}
+            inactiveDotScale={0.6}
+          />
+      );
+  }
+
+
+   listFotos = ({index, item})=>{
+    var fotos= this.props.user.fotos;
     fotos['1']='https://i.pinimg.com/736x/53/63/d2/5363d25443755e636ca5843aa5b141b1.jpg';
     fotos['2']='https://static.paraoscuriosos.com/img/articles/7274/800x800/5b55cfaf66a80_1-1.jpg';
     fotos['3']='https://i.pinimg.com/originals/44/94/80/449480dd65c82761550d7ecaa305aaa9.jpg';
-    var tamanho = width/((1.5*lista.length))
     panResponder = PanResponder.create({});
-     
-    return(           
-        
-        
-    <Swiper index={1} style={[styles.fotosContainer,{top:0,bottom:0,left:0,right:0,width:width-40,height:height/2.4,/*height:(lista.length*20)+height/2.4, width:150+(lista.length*20)*/}]} showsButtons={false}>
-            
-            {lista.map((value, index)=>(   
-
-          <Image  style={[styles.foto]} source={{uri:fotos[''+index+'']}} resizeMode='contain' {...panResponder.panHandlers}/>
-            ))}
-        </Swiper>
-
-            
+    return(                       
+          <View style={styles.fotoContainer}>
+          <Image key={index} style={[styles.foto]} source={{uri:item}} resizeMode='contain' {...panResponder.panHandlers}/>
+          <Pagination/>
+          </View>
+          
     )
 }
   frontView(){
@@ -61,10 +83,17 @@ export class UserCard extends React.Component {
             <Text style={{color:'#444444',}}>{'@'+this.state.user.user}</Text>
           </View>
         </View>
-        {
-          this.listFotos()
-       }
-
+               <Carousel
+                      layout={'stack'}
+                      ref={(c) => { this._carousel = c; }}
+                      data={this.fotos()}
+                      renderItem={this.listFotos}
+                      sliderWidth={width-40}
+                      onSnapToItem={(index) => this.setState({ activeSlide: index }) }
+                      itemWidth={width-40}
+                      layoutCardOffset={`2`}
+                    />
+                                    { this.pagination }
 
           <Text style={styles.bio} numberOfLines={3}>{this.state.user.bio}</Text>
           
@@ -167,22 +196,29 @@ const styles = StyleSheet.create(
           },
       },
       fotoContainer:{
+        flex:1,
           shadowColor: "#111",
-          position:'absolute',
-          alignItems: 'center',
+          alignSelf:'center',
+          alignItems:'center',
           alignContent:'center',
           justifyContent:'center',
           shadowRadius: 5.46,
           elevation: 9,
+
+
           shadowOffset: {
               width: 4,
               height: 4,
           },
       },
       foto:{
-          alignSelf: 'center',
-          height: height/2.4,
-          width: width-40,
+        alignSelf:'center',
+
+          height: height/1.6,
+          width: width-100,
+          borderRadius:(height*10/width),
+
+          
       },
       footer:{
           paddingHorizontal:20,
