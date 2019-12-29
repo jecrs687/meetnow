@@ -1,0 +1,33 @@
+{
+  "expo": {
+    "name": "meetnow",
+    "slug": "conhecaAgora",
+    "privacy": "public",
+    "sdkVersion": "35.0.0",
+    "android": {
+      "package": "com.meetnow"
+    },
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "version": "1.0.1",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 5
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    }
+  }
+}
