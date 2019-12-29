@@ -4,6 +4,7 @@ import { Ionicons,FontAwesome,MaterialCommunityIcons} from '@expo/vector-icons';
 import {Button,PanResponder,AsyncStorage,View,Text,SafeAreaView, Image, StyleSheet, TouchableOpacity, Dimensions,StatusBar, ScrollView} from 'react-native';
 var width=Dimensions.get('window').width;
 import Carousel,{Pagination} from 'react-native-snap-carousel';
+import {UserCardImage} from './UserCardImage'
 
 import Swiper from 'react-native-swiper'
 
@@ -31,6 +32,9 @@ export class UserCard extends React.Component {
             lista.push(value)
         }
     );console.log(lista);
+    lista[1]='https://i.pinimg.com/736x/53/63/d2/5363d25443755e636ca5843aa5b141b1.jpg';
+    lista[2]='https://static.paraoscuriosos.com/img/articles/7274/800x800/5b55cfaf66a80_1-1.jpg';
+    lista[3]='https://i.pinimg.com/originals/44/94/80/449480dd65c82761550d7ecaa305aaa9.jpg';
     return(lista)}
 
     get pagination () {
@@ -60,17 +64,18 @@ export class UserCard extends React.Component {
 
 
    listFotos = ({index, item})=>{
-    var fotos= this.props.user.fotos;
-    fotos['1']='https://i.pinimg.com/736x/53/63/d2/5363d25443755e636ca5843aa5b141b1.jpg';
-    fotos['2']='https://static.paraoscuriosos.com/img/articles/7274/800x800/5b55cfaf66a80_1-1.jpg';
-    fotos['3']='https://i.pinimg.com/originals/44/94/80/449480dd65c82761550d7ecaa305aaa9.jpg';
-    panResponder = PanResponder.create({});
-    return(                       
-          <View style={styles.fotoContainer}>
-          <Image key={index} style={[styles.foto]} source={{uri:item}} resizeMode='contain' {...panResponder.panHandlers}/>
-          <Pagination/>
-          </View>
-          
+    return(  
+      <View style={{overflow:'visible', top:0,bottom:0,left:0,right:0}}>                         
+          <UserCardImage style={{
+                shadowColor: "#000",
+                shadowOffset: {
+                  width: 0,
+                  height: 2,
+                },
+                shadowOpacity: 0.25,
+                shadowRadius: 3.84,
+                elevation: 5,
+            }}foto={item}/></View>
     )
 }
   frontView(){
@@ -91,7 +96,9 @@ export class UserCard extends React.Component {
                       sliderWidth={width-40}
                       onSnapToItem={(index) => this.setState({ activeSlide: index }) }
                       itemWidth={width-40}
-                      layoutCardOffset={`2`}
+                      itemHeight={height-360}
+                      layoutCardOffset={3}
+
                     />
                                     { this.pagination }
 
@@ -214,9 +221,9 @@ const styles = StyleSheet.create(
       foto:{
         alignSelf:'center',
 
-          height: height/1.6,
+          height: height-400,
           width: width-100,
-          borderRadius:(height*10/width),
+          borderRadius:(height*4/width),
 
           
       },
