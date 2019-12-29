@@ -188,10 +188,16 @@ const styles = StyleSheet.create(
   },
     containerSobe:{
       alignItems:'stretch',
+      flex:1,
       justifyContent:'space-between'
     },
 
       mensagens:{
+        top:0,
+        bottom:0,
+        left:0,
+        flex:1,
+        right:0,
       },
       mensagem:{
         minWidth:75,

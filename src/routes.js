@@ -65,7 +65,7 @@ const Principal = createMaterialBottomTabNavigator({
 }, {
 
    shifting:true,
-  initialRouteName: 'Curtir',
+  initialRouteName: 'Conversas',
   activeColor: '#ffcce0',
   barStyle:{
     height:50,

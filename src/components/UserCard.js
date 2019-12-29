@@ -31,7 +31,7 @@ export class UserCard extends React.Component {
    ([key, value]) => {
             lista.push(value)
         }
-    );console.log(lista);
+    );
     lista[1]='https://i.pinimg.com/736x/53/63/d2/5363d25443755e636ca5843aa5b141b1.jpg';
     lista[2]='https://static.paraoscuriosos.com/img/articles/7274/800x800/5b55cfaf66a80_1-1.jpg';
     lista[3]='https://i.pinimg.com/originals/44/94/80/449480dd65c82761550d7ecaa305aaa9.jpg';
@@ -252,7 +252,6 @@ const styles = StyleSheet.create(
       button:{
           maxHeight:50,
           maxWidth:50,
-          padding:10,
           borderRadius:200,
           justifyContent:'center',
           alignItems:'center',

@@ -26,7 +26,7 @@ export class UserCardImage extends React.Component {
  
     <TouchableOpacity activeOpacity={0.8} onLongPress={()=>{this.setState({isFlipped:!this.state.isFlipped})}}>
         <View style={styles.fotoContainer}>
-          <Image style={[styles.foto]} source={{uri:this.props.foto}} resizeMode='contain' />
+          <Image style={[styles.foto]} source={{uri:this.props.foto}} onLoad={()=>{console.log(this.state);console.log('imagem carregada')}} resizeMode='contain' />
         </View>
      </TouchableOpacity>
     )
