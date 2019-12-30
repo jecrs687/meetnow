@@ -71,34 +71,7 @@ export default function Curtir({navigation}){
     
     }, []);
 
-    function listFotos(user){
-        var fotos= user.fotos;
-        var lista=[];
-        Object.entries(fotos).forEach(
-            ([key, value]) => {
-                lista.push(value)
-            }
-        );
-        fotos['1']='https://i.pinimg.com/736x/53/63/d2/5363d25443755e636ca5843aa5b141b1.jpg';
-        fotos['2']='https://static.paraoscuriosos.com/img/articles/7274/800x800/5b55cfaf66a80_1-1.jpg';
-        fotos['3']='https://i.pinimg.com/originals/44/94/80/449480dd65c82761550d7ecaa305aaa9.jpg';
-        var tamanho = width/((1.5*lista.length))
-        panResponder = PanResponder.create({});
-         
-        return(           
-            
-            <View style={[styles.fotosContainer,{height:(lista.length*20)+height/2.4, width:150+(lista.length*20)}]}>
-                {lista.map((value, index)=>(   
-  
-                <View style={[styles.fotoContainer,{left:(index*tamanho-(tamanho*(lista.length/2))),top:(index*(tamanho/1.2)-((tamanho/1.2)*(lista.length/2))),zIndex:index}]} >
-                <Image style={[styles.foto,{borderRadius:30}]} source={{uri:fotos[''+index+'']}} resizeMode='contain' {...panResponder.panHandlers}/>
-                </View>
-
-            ))}
-
-                </View>
-        )
-    }
+    
     function match(){
         return(
                 matchDev && (

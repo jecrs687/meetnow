@@ -44,17 +44,23 @@ export class UserCard extends React.Component {
             dotsLength={this.fotos().length}
             activeDotIndex={activeSlide}
             containerStyle={{
-              
+              position:"absolute",
+              bottom:100,
+              alignSelf:'center',              
             }}
             dotStyle={{
                 width: 10,
                 height: 10,
                 borderRadius: 5,
+                borderColor:'#687',
+                borderWidth:1,
                 marginHorizontal: 1,
-                backgroundColor: '#687'
+                backgroundColor: 'white'
             }}
             inactiveDotStyle={{
                 marginHorizontal: 1,
+                borderColor:'white',
+                borderWidth:1,
                     }}
             inactiveDotOpacity={0.4}
             inactiveDotScale={0.6}
@@ -96,7 +102,7 @@ export class UserCard extends React.Component {
                       sliderWidth={width-40}
                       onSnapToItem={(index) => this.setState({ activeSlide: index }) }
                       itemWidth={width-40}
-                      itemHeight={height-360}
+                      itemHeight={height-280}
                       layoutCardOffset={3}
 
                     />
@@ -221,7 +227,7 @@ const styles = StyleSheet.create(
       foto:{
         alignSelf:'center',
 
-          height: height-400,
+          height: height-250,
           width: width-100,
           borderRadius:(height*4/width),
 

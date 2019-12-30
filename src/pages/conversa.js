@@ -2,95 +2,83 @@ import React, {useEffect, useState} from 'react';
 import api from '../services/api';
 import {TextInput,Text, View, Image,StyleSheet,KeyboardAvoidingView,ScrollView,TouchableOpacity, AsyncStorage} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import * as firebase from  'firebase';
+import { GiftedChat } from 'react-native-gifted-chat';
 
 
 export default function Conversa({navigation}){  
     const [user,setUser]=useState({})
     const [text,setText]=useState('')
+    const [messages, setMessager] = useState([])
+    const [id, setId] = useState(firebase.auth().currentUser.uid);
+   
+    navigationOptions = ({ navigation }) => ({
+      title: navigation.state.params.id});
+    
 
-    const list = [
-        
-      {
-          name: 'null',
-          mensagem: 'oi',
-        },
-        {
-          name: 'Node-23',
-          mensagem: 'oi',
-        },
-        {
-          name: 'null',
-          mensagem: 'tudo bem?',
-        },
-        {
-          name: 'Node-23',
-          mensagem: 'tudo e contingo?',
-        },
-        {
-          name: 'null',
-          mensagem: 'tudo bem, tá quente esses dias, né?',
-        },        {
-          name: 'Node-23',
-          mensagem: 'sim, normal em teresina',
-        },
-        {
-          name: 'null',
-          mensagem: 'verdade',
-        },{
-          name: 'null',
-          mensagem: 'oi',
-        },
-        {
-          name: 'Node-23',
-          mensagem: 'oi',
-        },
-        {
-          name: 'null',
-          mensagem: 'tudo bem?',
-        },
-        {
-          name: 'Node-23',
-          mensagem: 'tudo e contingo?',
-        },
-        {
-          name: 'null',
-          mensagem: 'tudo bem, tá quente esses dias, né?',
-        },        {
-          name: 'Node-23',
-          mensagem: 'sim, normal em teresina',
-        },
-        {
-          name: 'null',
-          mensagem: 'verdade',
-        },{
-          name: 'null',
-          mensagem: 'oi',
-        },
-        {
-          name: 'Node-23',
-          mensagem: 'oi',
-        },
-        {
-          name: 'null',
-          mensagem: 'tudo bem?',
-        },
-        {
-          name: 'Node-23',
-          mensagem: 'tudo e contingo?',
-        },
-        {
-          name: 'null',
-          mensagem: 'tudo bem, tá quente esses dias, né?',
-        },        {
-          name: 'Node-23',
-          mensagem: 'sim, normal em teresina',
-        },
-        {
-          name: 'null',
-          mensagem: 'verdade',
-        },
-      ]
-    function abrirConversa(nome){
+  function ref() {
+    return firebase.database().ref('messages/testando');
+  }
+
+  parse = snapshot => {
+    console.log(snapshot.val());
+    const { timestamp: numberStamp, text, user } = snapshot.val();
+    const { key: _id } = snapshot;
+    const timestamp = new Date(numberStamp);
+    const message = {
+      _id,
+      timestamp,
+      text,
+      user,
+    };
+    return message;
+  };
+
+  on = callback =>
+    ref()
+      .limitToLast(20)
+      .on('child_added', snapshot => snapshot? callback(parse(snapshot)): null);
+
+  function timestamp() {
+    return firebase.database.ServerValue.TIMESTAMP;
+  }
+  useEffect(on(),[])
+  // send the message to the Backend
+  send = messages => {
+    for (let i = 0; i < messages.length; i++) {
+      const { text, user } = messages[i];
+      const message = {
+        text,
+        user,
+        timestamp:timestamp(),
+      };
+      setMessager(previousState => (GiftedChat.append(previousState, messages)))
+    }
+  };
+
+  append = message => ref().push(message);
+
+  // close the connection to the Backend
+
+  
+    useEffect(()=>{
+      firebase.database().ref('/users/'+id).on('value', function (snapshot){
+        var {name, bio,  user,gosto, desgosto, avatar, fotos} = snapshot.toJSON(); 
+        setUser({
+            avatar:avatar ,
+            name: name,
+            bio: bio,
+            user: user,
+            gosto: gosto,
+            desgosto: desgosto,
+
+        });
+        })
+    },[])
+  
+
+
+      /*function abrirConversa(nome){
         AsyncStorage.setItem('conversaName', nome);
     }
     useEffect(()=>{
@@ -102,8 +90,9 @@ export default function Conversa({navigation}){
         }     
   }
   )},[])
+  
   function loadMensagens({mensagem, name}, index){
-    if(name == user.user){
+    if(id == name){
               return(
               <View key={index} style={styles.mensagem}>
               <Text style={styles.textMensagem}>{mensagem}</Text>
@@ -120,16 +109,22 @@ export default function Conversa({navigation}){
             </View>
             )}
   }
-  async function loadUser(nome){
+   async function loadUser(nome){
 
     const response  =await api.post('/devs', {username: nome});
        setUser(response.data)
        
-    }
+    }*/
+    
     async function handleReturn(){
       await AsyncStorage.removeItem('conversaName');
       navigation.navigate('listConversas');
-    }
+    };
+
+
+
+
+
     return(
 
       <View style={styles.container}>
@@ -154,27 +149,22 @@ export default function Conversa({navigation}){
       enabled={true}
       style={styles.containerSobe}
       >
-      <ScrollView style={styles.mensagens} invertStickyHeaders={true} 
+      <GiftedChat
+        messages={messages}
+        onSend={send}
+        user={this.user}
+      />
+      
+      {/*    <ScrollView style={styles.mensagens} invertStickyHeaders={true} 
           ref={ref => this.scrollView = ref}
           onContentSizeChange={(contentWidth, contentHeight)=>{        
               this.scrollView.scrollToEnd({animated: false});
           }}
       >
           {user.name!=null? 
-          list.map(({mensagem, name}, index)=>loadMensagens({mensagem,  name}, index)):null}
-      </ScrollView>
-    <View style={styles.entrada}>
-    <TextInput
-    placeholder='menssagem'
-    autoCapitalize="none"
-    autoCorrect={false}
-    value={text}
-    onChangeText={setText}
-    style={styles.input} />
-        <TouchableOpacity style={styles.button}>
-        <Ionicons name="ios-send" size={40} color="#AAA" styles={styles.icon} />
-    </TouchableOpacity>
-    </View>
+          list.map(({mensagem, id}, index)=>loadMensagens({mensagem,  name:id}, index)):null}
+      </ScrollView>*/}
+
     </KeyboardAvoidingView>
     </View>
     
@@ -193,6 +183,7 @@ const styles = StyleSheet.create(
     },
 
       mensagens:{
+        backgroundColor:'white',
         top:0,
         bottom:0,
         left:0,
@@ -212,6 +203,15 @@ const styles = StyleSheet.create(
         borderBottomStartRadius:10,
         alignSelf:'flex-end',
         padding:6,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 1,
+        },
+        shadowOpacity: 0.22,
+        shadowRadius: 2.22,
+
+        elevation: 3,
       },
       mensagemContra:{
         marginTop:5,
@@ -226,6 +226,15 @@ const styles = StyleSheet.create(
         padding:6,
         marginRight:50,
         backgroundColor:'#00e600',
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 1,
+        },
+        shadowOpacity: 0.22,
+        shadowRadius: 2.22,
+
+        elevation: 3,
       },
       textMensagem:{
         marginHorizontal:8,
