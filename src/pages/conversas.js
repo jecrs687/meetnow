@@ -77,23 +77,16 @@ export default function Conversas({navigation}){
 
           
       ]
-     async function abrirConversa({id}){
-      navigation.setParams({id: this.id})
-      navigation.navigate('Conversa');
+     async function abrirConversa({id, name, avatar, email}){
+      navigation.navigate('Conversa',{id: id, name:name, avatar:avatar, email:email});
     }
-    useEffect(()=>{
-        AsyncStorage.getItem('conversaName').then(conversaName=>{
-          if(conversaName!=null){navigation.navigate('Conversa');}
-    }
-    )
-      }, [])
     return(
 
     <SafeAreaView style={{paddingTop:30}}>
                 <ScrollView>
 
         {list.map(({name, avatar_url, subtitle, id}, index)=>(
-            <TouchableOpacity key={index} style={styles.button} onPress={()=>{abrirConversa({id:id})}}>
+            <TouchableOpacity key={index} style={styles.button} onPress={()=>{abrirConversa({id:id, name:name, avatar: avatar_url, email:"emanuel@gmail.com"})}}>
             <View style={styles.containerConversa}>
                 <Image style={styles.avatar}  source={{uri: avatar_url}}/>
                 <View style={styles.foot}>

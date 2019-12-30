@@ -59,7 +59,7 @@ export class UserCardImage extends React.Component {
     <TouchableOpacity activeOpacity={0.8} onLongPress={()=>{this.setState({isFlipped:!this.state.isFlipped})}}>
         <View style={styles.fotoContainer}>
  
-          <Image style={[styles.foto]} source={{uri:this.props.foto}} onLoad={(item)=>{this.setState({theHeigth:item.nativeEvent.source.height});this.setState({theWidth:item.nativeEvent.source.width})}} resizeMode='contain' />
+          <Image style={[styles.foto]} source={{uri:this.props.foto, cache:'force-cache'}} onLoad={(item)=>{this.setState({theHeigth:item.nativeEvent.source.height});this.setState({theWidth:item.nativeEvent.source.width})}} resizeMode='contain' />
         </View>
      </TouchableOpacity>
     )
@@ -99,7 +99,7 @@ const styles = StyleSheet.create(
       fotoContainer:{
         flex:1,
           alignSelf:'center',
-          overflow:'visible',
+          overflow:'hidden',
           alignItems:'center',
           alignContent:'center',
           justifyContent:'center',
@@ -135,7 +135,6 @@ const styles = StyleSheet.create(
       foto:{
         alignSelf:'center',
         borderRadius:(height*4/width),
-
           height: height-300,
           width: width-60,
         

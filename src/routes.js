@@ -7,7 +7,7 @@ import { Ionicons, MaterialIcons,MaterialCommunityIcons} from '@expo/vector-icon
 import Curtir from './pages/curtir';
 import perfilUser from './pages/perfil';
 import listConversas from './pages/conversas';
-import Conversa from './pages/conversa';
+import Conversa from './components/conversa';
 import eventos from './pages/eventos';
 import Login from './index'
 import CriarConta from './pages/criarConta'
@@ -65,7 +65,7 @@ const Principal = createMaterialBottomTabNavigator({
 }, {
 
    shifting:true,
-  initialRouteName: 'Conversas',
+  initialRouteName: 'Curtir',
   activeColor: '#ffcce0',
   barStyle:{
     height:50,

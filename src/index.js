@@ -16,14 +16,14 @@ export default function Login({navigation}) {
 
     useEffect(()=>{
       
-      firebase.auth().signInWithEmailAndPassword(user, senha)
-      .then((snapshot)=>{
-        AsyncStorage.setItem('id', snapshot.user.uid);
-        navigation.navigate('Principal').catch(()=>{setLogar('email ou senha incorreto')});
+    //   firebase.auth().signInWithEmailAndPassword(user, senha)
+    //   .then((snapshot)=>{
+    //     AsyncStorage.setItem('id', snapshot.user.uid);
+    //     navigation.navigate('Principal').catch(()=>{setLogar('email ou senha incorreto')});
         
         
-    })
-      .catch(()=>{null});
+    // })
+    //   .catch(()=>{null});
       AsyncStorage.getItem('name').then(name=>{
         if(name){setUser(name); handleLogin}
   }
@@ -79,8 +79,7 @@ export default function Login({navigation}) {
       navigation.navigate('Principal');*/
   }
   async function handleCriar(){
-    firebase.auth().createUserWithEmailAndPassword(user, senha).then(()=>{setLogar('conta criada com sucesso');}).catch(()=>{setLogar('não foi possível criar a conta');});
-    //navigation.navigate('CriarConta');
+    navigation.navigate('CriarConta');
 }
     return (
       <KeyboardAvoidingView

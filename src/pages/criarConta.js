@@ -1,264 +1,153 @@
-import React,{useEffect, useState} from 'react'
-import io from 'socket.io-client';
-import {AsyncStorage,KeyboardAvoidingView,Platform,StyleSheet, Text, View, Image,TextInput,TouchableOpacity } from 'react-native';
-import logo from '../assets/logo.png'
-import api from '../services/api'
+import React from 'react';
+import { Constants, ImagePicker, Permissions } from 'expo';
+import {
+  StyleSheet, Text,
+  TextInput, View,
+  Button, ImageEditor,
+} from 'react-native';
+import firebaseSvc from '../services/FirebaseSvg';
 
-export default function CriarConta({navigation}) {
-    const [text, setText] = useState('');
-    const [name, setName] = useState('');
-    const [senha, setSenha] = useState('');
-    const [bio, setBio] = useState('');
-    const [avatar, setAvatar] = useState('');
-    const [gostos, setGostos] = useState('');
-    useEffect(()=>{
-      AsyncStorage.getItem('name').then(name=>{
-        if(name){  setName(name) }
+class CreateAccount extends React.Component {
+  static navigationOptions = {
+    title: 'Create account',
+  };
 
-  }
-  )
-  AsyncStorage.getItem('bio').then(bio=>{
-    if(bio){  setBio(bio) }
-  }
-)
-AsyncStorage.getItem('avatar').then(avatar=>{
-  if(avatar){  setAvatar(avatar) }
-}
-)
-AsyncStorage.getItem('senha').then(senha=>{
-  if(senha){  setSenha(senha) }
-}
-)
-AsyncStorage.getItem('gostos').then(gostos=>{
-  if(gostos){  setGostos(gostos) }
-}
-)
+  state = {
+    name: '',
+    email: '',
+    password: '',
+    avatar: '',
+  };
 
-  }, [])
-function handleNext(){
-  name.length==0? 
-    setName(text)
-    : 
-    senha.length==0? 
-      setSenha(text)
-      :
-      bio.length==0? 
-        setBio(text)
-        :
-        avatar.length==0? 
-          setAvatar(text)
-          :
-          gostos.length==0? 
-            setGostos(text)
-            :
-            navigation.navigate('Login')
+  onPressCreate = async () => {
+    console.log('create account... email:' + this.state.email);
+    try {
+      const user = {
+        name: this.state.name,
+        email: this.state.email,
+        password: this.state.password,
+        avatar: this.state.avatar,
+      };
+      await firebaseSvc.createAccount(user);
+    } catch ({ message }) {
+      console.log('create account failed. catch error:' + message);
+    }
+  };
 
-AsyncStorage.setItem('senha', senha);
-AsyncStorage.setItem('name', name);
-AsyncStorage.setItem('bio', bio);
-AsyncStorage.setItem('avatar', avatar);
-AsyncStorage.setItem('gostos', gostos);
-setText('');
-}
- function handleReturn(){
-     senha.length==0? 
-      setName('')
-      :
-      bio.length==0? 
-        setSenha('')
-        :
-        avatar.length==0? 
-          setBio('')
-          :
-          gostos.length==0? 
-            setAvatar('')
-            :
-            null
-console.log(name, senha, gostos);
-setText('');
-}
+  onChangeTextEmail = email => this.setState({ email });
+  onChangeTextPassword = password => this.setState({ password });
+  onChangeTextName = name => this.setState({ name });
 
-function textname(){
-  return (
-  <React.Fragment>
-  <TextInput 
-    autoCapitalize="none"
-    autoCorrect={false}
-    placeholder="usuário do instagram" 
-    value={text}
-    onChangeText={setText}
-    style={styles.input}/>
-    <View style={styles.buttons}>
-      <TouchableOpacity onPress={handleNext} style={styles.button}><Text style={styles.textButton}>confirmar</Text></TouchableOpacity>
-    </View>
-    </React.Fragment>
-    )}
-function textSenha(){
-  return (
-    <React.Fragment>
-    <TextInput 
-    autoCapitalize="none"
-    autoCorrect={false}
-    placeholder="usuário do instagram" 
-    value={name}
-    onChangeText={setName}
-    style={styles.input}/>
-    <TextInput 
-      autoCapitalize="none"
-      autoCorrect={false}
-      placeholder="senha"
-      textContentType='password'
-      value={text}
-      onChangeText={setText}
-      style={styles.input}/>
-      <View style={styles.buttons}>
-        <TouchableOpacity onPress={handleReturn} style={styles.button2}><Text style={styles.textButton}>voltar</Text></TouchableOpacity>
-        <TouchableOpacity onPress={handleNext} style={styles.button}><Text style={styles.textButton}>confirmar</Text></TouchableOpacity>
-      </View>
-      </React.Fragment>
-    )}
-function textBio(){
-  return (
-    <React.Fragment>
-    <TextInput 
-      autoCapitalize="none"
-      autoCorrect={false}
-      placeholder="Me fale um pouco sobre você" 
-      value={text}
-      onChangeText={setText}
-      style={styles.inputGrande}/>
-      <View style={styles.buttons}>      
-      <TouchableOpacity onPress={handleReturn} style={styles.button2}><Text style={styles.textButton}>voltar</Text></TouchableOpacity>
-        <TouchableOpacity onPress={handleNext} style={styles.button}><Text style={styles.textButton}>confirmar</Text></TouchableOpacity>
-      </View>
-      </React.Fragment>
-    )}
-function textAvatar(){
-return (
-  <React.Fragment>
-  <TextInput 
-    autoCapitalize="none"
-    autoCorrect={false}
-    placeholder="Link de fotinha" 
-    value={text}
-    onChangeText={setText}
-    style={styles.input}/>
-    <View style={styles.buttons}>
-    <TouchableOpacity onPress={handleReturn} style={styles.button2}><Text style={styles.textButton}>voltar</Text></TouchableOpacity>
+  onImageUpload = async () => {
+    const { status: cameraRollPerm } = await Permissions.askAsync(
+      Permissions.CAMERA_ROLL
+    );
+    try {
+      // only if user allows permission to camera roll
+      if (cameraRollPerm === 'granted') {
+        console.log('choosing image granted...');
+        let pickerResult = await ImagePicker.launchImageLibraryAsync({
+          allowsEditing: true,
+          aspect: [4, 3],
+        });
+        console.log(
+          'ready to upload... pickerResult json:' + JSON.stringify(pickerResult)
+        );
 
-      <TouchableOpacity onPress={handleNext} style={styles.button}><Text style={styles.textButton}>confirmar</Text></TouchableOpacity>
-    </View>
-    </React.Fragment>
-)}
-function textGostos(){
-  return (
-    <React.Fragment>
-    <TextInput 
-      autoCapitalize="none"
-      autoCorrect={false}
-      placeholder="Quais são as coisas que você gosta e lhe atraem?" 
-      value={text}
-      onChangeText={setText}
-      style={styles.inputGrande}/>
-      <View style={styles.buttons}>
-      <TouchableOpacity onPress={handleReturn} style={styles.button2}><Text style={styles.textButton}>voltar</Text></TouchableOpacity>
+        var wantedMaxSize = 150;
+        var rawheight = pickerResult.height;
+        var rawwidth = pickerResult.width;
+        
+        var ratio = rawwidth / rawheight;
+        var wantedwidth = wantedMaxSize;
+        var wantedheight = wantedMaxSize/ratio;
+        // check vertical or horizontal
+        if(rawheight > rawwidth){
+            wantedwidth = wantedMaxSize*ratio;
+            wantedheight = wantedMaxSize;
+        }
+        console.log("scale image to x:" + wantedwidth + " y:" + wantedheight);
+        let resizedUri = await new Promise((resolve, reject) => {
+          ImageEditor.cropImage(pickerResult.uri,
+          {
+              offset: { x: 0, y: 0 },
+              size: { width: pickerResult.width, height: pickerResult.height },
+              displaySize: { width: wantedwidth, height: wantedheight },
+              resizeMode: 'contain',
+          },
+          (uri) => resolve(uri),
+          () => reject(),
+          );
+        });
+        let uploadUrl = await firebaseSvc.uploadImage(resizedUri);
+        //let uploadUrl = await firebaseSvc.uploadImageAsync(resizedUri);
+        await this.setState({ avatar: uploadUrl });
+        console.log(" - await upload successful url:" + uploadUrl);
+        console.log(" - await upload successful avatar state:" + this.state.avatar);
+        await firebaseSvc.updateAvatar(uploadUrl); //might failed
+      }
+    } catch (err) {
+      console.log('onImageUpload error:' + err.message);
+      alert('Upload image error:' + err.message);
+    }
+  };
 
-        <TouchableOpacity onPress={handleNext} style={styles.button}><Text style={styles.textButton}>confirmar</Text></TouchableOpacity>
-      </View>
-      </React.Fragment>
-    )}
-    function navegar(){
-  setTimeout(function(){ navigation.navigate('Login'); },100)
-}
+  render() {
     return (
-      <KeyboardAvoidingView
-      behavior="padding"
-      enabled={true}
-      style={styles.container}
-      >
-    <Image source={logo} style={styles.logo}/>
-          {name.length==0? textname():
-           senha.length==0? textSenha():
-           bio.length==0? textBio():
-           avatar.length==0? textAvatar():
-           gostos.length==0? textGostos():
-           navegar()
-           }
-    </KeyboardAvoidingView>
-  );
-}
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f5f5f5',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding:30,
-  },
-  input:{
-    height:46,
-    alignSelf:'stretch',
-    backgroundColor: '#FFF',
-    borderWidth:0.1,
-    borderRadius:4,
-    borderColor:'#f0f0f5',
-    marginTop:20,
-    paddingHorizontal:15,
-  },
-  inputGrande:{
-    height:300,
-    padding:10,
-    textAlignVertical:'top',
-    textAlign:'left',
-    alignSelf:'stretch',
-    borderWidth:0.1,
-    borderRadius:4,
-    borderColor:'#f0f0f5',
-    elevation:2,
-    shadowColor:'#000',
-    shadowOpacity: 0.05,
-    shadowRadius:2,
-    shadowOffset:{
-        width:0,
-        height:2,
-    },
-    marginTop:20,
-    paddingHorizontal:15,
-  },
-  buttons:{
-    flexDirection:'row',
-    alignSelf:'stretch',
-    alignItems:'center',
-    justifyContent:'space-between',
-},
-  button:{
-      width:'60%',
-      marginTop:10,
-      backgroundColor:'#ff3399',
-      borderColor:'#fff',
-      borderWidth:3,
-      borderRadius:7,
-      height:50,
-      alignSelf:'stretch',
-      alignItems:'center',
-      justifyContent:'center',
-  },
-  button2:{
-    width:'38%',
-    marginTop:10,
-    backgroundColor:'#0000ca',
-    borderColor:'#fff',
-    borderWidth:3,
-    borderRadius:7,
-    height:50,
-    alignSelf:'stretch',
-    alignItems:'center',
-    justifyContent:'center',
-  },
-  textButton:{
-      fontStyle:'normal',
-      fontWeight:'bold',
-      fontSize:14,
-      color:'white',
+      <View>
+        <Text style={styles.title}>Email:</Text>
+        <TextInput
+          style={styles.nameInput}
+          placeHolder="test3@gmail.com"
+          onChangeText={this.onChangeTextEmail}
+          value={this.state.email}
+        />
+        <Text style={styles.title}>Password:</Text>
+        <TextInput
+          style={styles.nameInput}
+          onChangeText={this.onChangeTextPassword}
+          value={this.state.password}
+        />
+        <Text style={styles.title}>Name:</Text>
+        <TextInput
+          style={styles.nameInput}
+          onChangeText={this.onChangeTextName}
+          value={this.state.name}
+        />
+        <Button
+          title="Create Account"
+          style={styles.buttonText}
+          onPress={this.onPressCreate}
+        />
+        <Button
+          title="Upload Avatar Image"
+          style={styles.buttonText}
+          onPress={this.onImageUpload}
+        />
+      </View>
+    );
   }
+}
+
+const offset = 16;
+const styles = StyleSheet.create({
+  title: {
+    marginTop: offset,
+    marginLeft: offset,
+    fontSize: offset,
+  },
+  nameInput: {
+    height: offset * 2,
+    margin: offset,
+    paddingHorizontal: offset,
+    borderColor: '#111111',
+    borderWidth: 1,
+    fontSize: offset,
+  },
+  buttonText: {
+    marginLeft: offset,
+    fontSize: 42,
+  },
 });
+
+export default CreateAccount;
