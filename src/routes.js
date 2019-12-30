@@ -46,6 +46,7 @@ const Principal = createMaterialBottomTabNavigator({
     )} },
   Conversas: { screen: conversar, navigationOptions:{
     tabBarLabel:'Conversas',
+    tabBarVisible:'hidden',
     tabBarIcon:({tintColor})=>(
         <React.Fragment>
     <View>

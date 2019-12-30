@@ -18,27 +18,39 @@ class Chat extends React.Component {
   state = {
     messages: [],
   };
-   handleReturn(){
-    console.log(this.props.navigation);
-  };
+
 
   get user() {
     return {
       name: this.props.navigation.state.params.name,
       email: this.props.navigation.state.params.email,
       avatar: this.props.navigation.state.params.avatar,
-      id: firebaseSvc.uid,
-      _id: firebaseSvc.uid, // need for gifted-chat
+      id: this.props.navigation.state.params.id,
+      _id: this.props.navigation.state.params.id, // need for gifted-chat
     };
   }
 
   render() {
+    const topContent = (        <View style={styles.topBar}>
+        <View style={styles.topBarItens}>
+        <TouchableOpacity onPress={()=>{this.props.navigation.navigate('listConversas');}} style={styles.buttonReturn}>
+        <Ionicons name="ios-arrow-back" size={25} color="#AAA" />
+        </TouchableOpacity>
+        <Image source={{uri: this.user.avatar}} style={styles.avatar}/>
+        <View>
+        <Text style={styles.name}>{this.user.name}</Text>
+        <Text style={styles.user}>{this.user.name}</Text>
+        </View>
+        </View>
+        </View>);
     const mainContent = (
+
         <GiftedChat
         messages={this.state.messages}
         placeholder="escreva algo..."
         onSend={firebaseSvc.send}
         loadEarlier={true}
+        textInputStyle={{height:100}}
         showAvatarForEveryMessage={true}
         user={this.user}
       />
@@ -46,35 +58,13 @@ class Chat extends React.Component {
     if (Platform.OS === 'android') {
       return (
       <KeyboardAvoidingView style={{flex: 1}} behavior="padding"  keyboardVerticalOffset={80} enabled>
-          <View style={styles.topBar}>
-            <View style={styles.topBarItens}>
-            <TouchableOpacity onPress={this.handleReturn} style={styles.buttonReturn}>
-            <Ionicons name="ios-arrow-back" size={25} color="#AAA" />
-            </TouchableOpacity>
-            <Image source={{uri: this.user.avatar}} style={styles.avatar}/>
-            <View>
-            <Text style={styles.name}>{this.user.name}</Text>
-            <Text style={styles.user}>{this.user.name}</Text>
-            </View>
-            </View>
-            </View>
+            {topContent}
            {mainContent} 
       </KeyboardAvoidingView>
     );
     } else {
       return (<SafeAreaView style={{flex: 1}}>
-          <View style={styles.topBar}>
-            <View style={styles.topBarItens}>
-            <TouchableOpacity onPress={this.handleReturn} style={styles.buttonReturn}>
-            <Ionicons name="ios-arrow-back" size={25} color="#AAA" />
-            </TouchableOpacity>
-            <Image source={{uri: this.user.avatar}} style={styles.avatar}/>
-            <View>
-            <Text style={styles.name}>{this.user.name}</Text>
-            <Text style={styles.user}>{this.user.name}</Text>
-            </View>
-            </View>
-            </View>
+         {topContent} 
         {mainContent}
       </SafeAreaView>)
     } 
@@ -149,7 +139,7 @@ const styles = StyleSheet.create(
             marginRight:20,
             height:40,
             width:40,
-            borderRadius:30,
+            borderRadius:20,
         },
         name:{
             fontWeight:'bold',
