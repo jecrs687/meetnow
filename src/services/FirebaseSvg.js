@@ -128,18 +128,19 @@ class FirebaseSvc {
     return message;
   };
 
-  refOn = callback => {
-    this.ref
+  refOn = (callback, getId) => {
+    this.ref.child(getId())
       .limitToLast(20)
-      .on('child_added', snapshot => callback(this.parse(snapshot)));
+      .on('child_added', snapshot => {callback(this.parse(snapshot))});
   }
+
 
   get timestamp() {
     return firebase.database.ServerValue.TIMESTAMP;
   }
   
   // send the message to the Backend
-  send = messages => {
+  send = ({messages, id}) => {
     for (let i = 0; i < messages.length; i++) {
       const { text, user } = messages[i];
       const message = {
@@ -147,12 +148,12 @@ class FirebaseSvc {
         user,
         createdAt: this.timestamp,
       };
-      this.ref.push(message);
+      this.ref.child(""+id+"").push(message)
     }
   };
 
-  refOff() {
-    this.ref.off();
+  refOff(id) {
+    this.ref.child(""+id+"").off();
   }
 }
 

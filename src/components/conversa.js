@@ -11,6 +11,7 @@ class Chat extends React.Component {
     super(props);
 
   }
+  
   static navigationOptions = ({ navigation }) => ({
     title: (navigation.state.params || {}).name || 'Chat!',
   });
@@ -36,7 +37,7 @@ class Chat extends React.Component {
         <TouchableOpacity onPress={()=>{this.props.navigation.navigate('listConversas');}} style={styles.buttonReturn}>
         <Ionicons name="ios-arrow-back" size={25} color="#AAA" />
         </TouchableOpacity>
-        <Image source={{uri: this.user.avatar}} style={styles.avatar}/>
+        <Image source={{uri: this.user.avatar, cache:'force-cache'}} style={styles.avatar}/>
         <View>
         <Text style={styles.name}>{this.user.name}</Text>
         <Text style={styles.user}>{this.user.name}</Text>
@@ -48,7 +49,7 @@ class Chat extends React.Component {
         <GiftedChat
         messages={this.state.messages}
         placeholder="escreva algo..."
-        onSend={firebaseSvc.send}
+        onSend={(messages)=>{firebaseSvc.send({messages: messages, id: this.props.navigation.state.params.id})}}
         loadEarlier={true}
         textInputStyle={{height:100}}
         showAvatarForEveryMessage={true}
@@ -72,15 +73,14 @@ class Chat extends React.Component {
  
 
   componentDidMount() {
-      
     firebaseSvc.refOn(message =>
       this.setState(previousState => ({
         messages: GiftedChat.append(previousState.messages, message),
-      }))
-    );
+      })),()=>(this.props.navigation.state.params.id)
+      )
   }
   componentWillUnmount() {
-    firebaseSvc.refOff();
+    firebaseSvc.refOff(this.props.navigation.state.params.id);
   }
 }
 const styles = StyleSheet.create(

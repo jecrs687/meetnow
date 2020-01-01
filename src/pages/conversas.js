@@ -8,27 +8,29 @@ export default function Conversas({navigation}){
     const list = [
         
         {
-          id:'18DcxytjOZOepNotEUccEo9sjV72',
+          id:'node-23',
 
             name: 'Node-23',
             avatar_url: 'https://avatars0.githubusercontent.com/u/54945311?v=4',
             subtitle: 'rola ou enrola?'
           },
           {
-            id:'18DcxytjOZOepNotEUccEo9sjV72',
+            id:'tiago',
 
             name: 'TiagoTR',
             avatar_url: 'https://avatars2.githubusercontent.com/u/48908903?v=4',
             subtitle: 'bicho, nem te conto'
           },
           {
-            id:'18DcxytjOZOepNotEUccEo9sjV72',
+            id:'note45',
 
             name: 'Note45',
             avatar_url: 'https://avatars0.githubusercontent.com/u/41867280?v=4',
             subtitle: 'sendo sincero, gosto muito de ******!'
           },
           {
+            id: 'IsaacRamos1',
+
             name: 'IsaacRamos1',
             avatar_url: 'https://avatars3.githubusercontent.com/u/46172558?v=4',
             subtitle: 'bora comer coxinha?'
@@ -88,7 +90,7 @@ export default function Conversas({navigation}){
         {list.map(({name, avatar_url, subtitle, id}, index)=>(
             <TouchableOpacity key={index} style={styles.button} onPress={()=>{abrirConversa({id:id, name:name, avatar: avatar_url, email:"emanuel@gmail.com"})}}>
             <View style={styles.containerConversa}>
-                <Image style={styles.avatar}  source={{uri: avatar_url}}/>
+                <Image style={styles.avatar}  source={{uri: avatar_url, cache:'force-cache'}}/>
                 <View style={styles.foot}>
                 <Text style={styles.nome}>{name}</Text>
                 <Text style={styles.mensagem}>{subtitle}</Text>

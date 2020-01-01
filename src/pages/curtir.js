@@ -91,6 +91,18 @@ export default function Curtir({navigation}){
     }
 
 
+
+    function listUsers(){
+       return( 
+        users.map((user,index)=>(
+            <UserCard key={index} user={user} handle={()=>{setRefresh(!refresh);}} handledeslike={(id)=>{handledeslike(id)}} isFlipped={true} />
+        )))
+    }
+
+    /*async function abrirPerfil(){
+       navigation.push('Perfil', users[0]._id); 
+    }*/
+
     async function handledeslike(id){
     
         console.log(id)
@@ -103,19 +115,6 @@ export default function Curtir({navigation}){
             headers:{user:id}
         })*/
         }
-    function listUsers(){
-        {console.log('recarregado')}
-       return( 
-        users.map((user,index)=>(
-            <UserCard key={index} user={user} handle={()=>{setRefresh(!refresh);}} handledeslike={(id)=>{handledeslike(id)}} isFlipped={true} onChange={()=>{console.log('mudou')}}/>
-        )))
-    }
-
-    /*async function abrirPerfil(){
-       navigation.push('Perfil', users[0]._id); 
-    }*/
-
-
     
     async function handlelike(){
         
