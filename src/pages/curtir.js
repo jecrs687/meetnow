@@ -2,8 +2,10 @@ import React,{useState, useEffect} from 'react';
 import {PanResponder,AsyncStorage,View,Text,SafeAreaView, Image, StyleSheet, TouchableOpacity, Dimensions,StatusBar, ScrollView} from 'react-native';
 import logo from '../assets/logo.png';
 import { Ionicons,FontAwesome} from '@expo/vector-icons';
-import * as firebase from  'firebase';
-import {UserCard} from '../components/UserCard'
+import {UserCard} from '../components/UserCard';
+import  FirebaseSvc from    '../services/FirebaseSvc';
+import firebaseSvc from '../services/FirebaseSvc';
+
 
 var width=Dimensions.get('window').width;
 var height=Dimensions.get('window').height;
@@ -16,59 +18,11 @@ export default function Curtir({navigation}){
     const [refresh, setRefresh] = useState(false);
 
     async function handleLogout(){
-        await AsyncStorage.clear();
+        FirebaseSvc.onLogout()
         navigation.navigate('Login')
-
     }
-
-/*useEffect(() => {
-    const socket = io('https://3333-dd6b7fb5-abc4-4ba7-b023-707e208dfee8.ws-us02.gitpod.io/', { 
-        query: {
-            user: id
-        }
-    })
-    socket.on('match', dev => {
-        setMatchDev(dev)
-    })
-}, [id])*/
     useEffect(()=>{
-        AsyncStorage.getItem('id').then(id=>{
-            setUId(id);
-        })
-        /*AsyncStorage.getItem('user').then(user=>{
-            loadUsers(user);
-      }
-      )
-                AsyncStorage.getItem('user').then(user=>{
-                    if(user){setId(user);}
-            }
-            )
-        const response = await api.get('/devs', {
-            headers:{
-                user:id,
-            }
-            
-        })*/
-        firebase.database().ref('/users').on('value', function (snapshot){
-            var users=[];            
-            snapshot.forEach(function(childSnapshot){
-                const retorno = childSnapshot.toJSON();
-                /*firebase.storage().ref('/users/profile').child(retorno['_id']+'.jpg').getDownloadURL().then(
-                    url=>{
-                        firebase.database().ref('/users/'+retorno['_id']).child('avatar').push(url)
-                    }
-                );*/
-                
-                users.push(retorno);
-
-            });
-
-            setUsers(users)
-        });
-        
-        //setUsers(response.data);
-        
-    
+        FirebaseSvc.obterFeed((retorno)=>{setUsers(retorno)})        
     }, []);
 
     
@@ -95,7 +49,7 @@ export default function Curtir({navigation}){
     function listUsers(){
        return( 
         users.map((user,index)=>(
-            <UserCard key={index} user={user} handle={()=>{setRefresh(!refresh);}} handledeslike={(id)=>{handledeslike(id)}} isFlipped={true} />
+            <UserCard key={index} user={user} handle={()=>{setRefresh(!refresh);}} handleLike={(id)=>{handlelike(id)}} handleDeslike={(id)=>{handledeslike(id)}} isFlipped={true} />
         )))
     }
 
@@ -104,25 +58,12 @@ export default function Curtir({navigation}){
     }*/
 
     async function handledeslike(id){
-    
-        console.log(id)
-        
-        console.log(users.findIndex(this._id=id))
-        const[user, ... rest] = users;
-        
-        setUsers(rest)
-        /*await api.post(`/devs/${user._id}/deslike`,null,{
-            headers:{user:id}
-        })*/
+        firebaseSvc.handleDeslike(id)
+
         }
     
-    async function handlelike(){
-        
-    const[user, ... rest] = users;
-    setUsers(rest)
-    /*await api.post(`/devs/${user._id}/like`,null,{
-        headers:{user:id}
-    })*/
+    async function handlelike( _id){
+        firebaseSvc.handleLike(id)
     }
     
     return(

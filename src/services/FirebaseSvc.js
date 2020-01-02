@@ -1,6 +1,7 @@
 import firebase from 'firebase';
 import uuid from 'uuid';
 import firebaseConfig from './apiKey'
+import { UserCard } from '../components/UserCard';
 
 
 class FirebaseSvc {
@@ -16,6 +17,46 @@ class FirebaseSvc {
     console.log("logging in");
     const output = await firebase.auth().signInWithEmailAndPassword(user.email, user.password)
     .then(success_callback, failed_callback);
+  }
+  handleLike = ( _id)=> {
+    const id=firebase.auth().currentUser.uid
+    firebase.database().ref(_id).child('likes').on('value',(snapshot)=>{
+      console.log(snapshot)
+    })
+    firebase.database().ref(id).child('likes').push(_id)
+  }
+  handleDeslike = (_id)=> {
+    const id=firebase.auth().currentUser.uid
+    firebase.database().ref(id).child('deslikes').push(_id)
+  }
+  obterFeed = (callback)=> {
+          firebase.database().ref('/users').on('value', function (snapshot){
+            var users=[];            
+            snapshot = snapshot.toJSON()
+            snapshot[firebase.auth().currentUser.uid]
+            delete snapshot[firebase.auth().currentUser.uid]
+            
+            for (var childSnapshot in snapshot){
+                const retorno = snapshot[childSnapshot]
+                users.push(retorno);
+            };
+            callback(users)
+          })
+  }
+  getPerfil = (callback)=>{
+    var user = firebase.auth().currentUser;
+    firebase.database().ref('users').child(user.uid).on('value', snapshot=>{
+      const {bio, desgostos,gostos, fotos, name, email, avatar, apelido} = snapshot.toJSON();
+      user.bio = bio;
+      user.desgostos = desgostos;
+      user.gostos=gostos;
+      user.fotos=fotos;
+      user.name = name;
+      user.email = email;
+      user.avatar = avatar;
+      user.apelido = apelido;
+      callback(user);
+    })
   }
 
   observeAuth = () =>
@@ -39,6 +80,19 @@ class FirebaseSvc {
       .then(function() {
         console.log("created user successfully. User email:" + user.email + " name:" + user.name);
         var userf = firebase.auth().currentUser;
+        
+        firebase.database().ref('users').child(userf.uid).set({
+          _id: userf.uid,
+          avatar: user.avatar,
+          name: user.name,
+          apelido: user.apelido,
+          email: user.email,
+          fotos:{1:"https://firebasestorage.googleapis.com/v0/b/meetnow-c6097.appspot.com/o/users%2Fprofile%2F4T96QMpodLanIX613z4XJoFYaMp2.jpg?alt=media&token=111db581-fa88-46a5-a8b3-a3d99079d2e4"},
+          gostos:user.gostos,
+          bio:user.bio,
+          desgostos: user.desgostos,
+        })
+
         userf.updateProfile({ displayName: user.name})
         .then(function() {
           console.log("Updated displayName successfully. name:" + user.name);
@@ -148,12 +202,12 @@ class FirebaseSvc {
         user,
         createdAt: this.timestamp,
       };
-      this.ref.child(""+id+"").push(message)
+      this.ref.child(id+"").push(message)
     }
   };
 
   refOff(id) {
-    this.ref.child(""+id+"").off();
+    this.ref.child(id+"").off();
   }
 }
 

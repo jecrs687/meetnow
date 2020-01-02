@@ -91,7 +91,7 @@ export class UserCard extends React.Component {
           <Image style={styles.avatar} source={{uri:this.state.user.avatar}}/>
           <View>
             <Text style={styles.name}>{this.state.user.name}</Text>
-            <Text style={{color:'#444444',}}>{'@'+this.state.user.user}</Text>
+            <Text style={{color:'#444444',}}>{'@'+this.state.user.apelido}</Text>
           </View>
         </View>
                <Carousel
@@ -111,13 +111,13 @@ export class UserCard extends React.Component {
           <Text style={styles.bio} numberOfLines={3}>{this.state.user.bio}</Text>
           
             <View style={styles.buttonsContainer}>
-                  <TouchableOpacity style={styles.button} onPress={()=>{this.state.handledeslike=true}}>
-                      <FontAwesome name='close' size={30} color={this.state.handledeslike? '#d11':'#45a8'} onPress={()=>{this.props.handledeslike(this.props.user._id)}} onLongPress={()=>{this.size=+1}}/>
+                  <TouchableOpacity style={styles.button} onPress={()=>{this.props.handleDeslike(this.props.user._id)}}>
+                      <FontAwesome name='close' size={30} color={this.state.handledeslike? '#d11':'#45a8'} />
                   </TouchableOpacity>
                   <TouchableOpacity style={styles.button} onPress={()=>{this.setState({isFlipped:!this.state.isFlipped}); this.props.handle();}}>
                       <MaterialCommunityIcons name='rotate-3d' size={30} color='black'/>
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.button} onPress={()=>{this.state.handlelike=true}}>
+                  <TouchableOpacity style={styles.button} onPress={()=>{this.props.handleLike(this.state.user._id)}}>
                       <Ionicons name='ios-heart' size={30} color='red'/>
                   </TouchableOpacity>
 

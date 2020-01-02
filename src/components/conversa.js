@@ -1,7 +1,8 @@
 import React from 'react';
 import { GiftedChat } from 'react-native-gifted-chat'; // 0.3.0
 import {Text, View, Image,StyleSheet,SafeAreaView,KeyboardAvoidingView,TouchableOpacity,Platform} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';import firebaseSvc from '../services/FirebaseSvg';
+import { Ionicons } from '@expo/vector-icons';
+import firebaseSvc from '../services/FirebaseSvc';
 
 
 

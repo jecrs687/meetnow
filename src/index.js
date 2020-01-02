@@ -1,21 +1,18 @@
 import React,{useEffect, useState} from 'react'
-import io from 'socket.io-client';
-import * as GoogleSignin from 'expo-google-sign-in';
 import {AsyncStorage,KeyboardAvoidingView,StyleSheet, Text,View, Image,TouchableOpacity } from 'react-native';
 import logo from './assets/logo.png';
 import { TextInput } from 'react-native-paper';
-import api from './services/api';
 import {Zocial} from '@expo/vector-icons';
-import * as firebase from  'firebase';
-import firebaseConfig from './services/apiKey';
+import firebaseSvc from './services/FirebaseSvc';
+
 export default function Login({navigation}) {
     const [logar, setLogar] = useState('');
-    const [user, setUser] = useState('elaine@gmail.com');
+    const [user, setUser] = useState('emanuel@gmail.com');
     const [senha, setSenha] = useState('123123');
-    if(!firebase.apps.length){firebase.initializeApp(firebaseConfig);}
 
     useEffect(()=>{
-      
+      firebaseSvc.uid?
+      navigation.navigate('Principal'):null
     //   firebase.auth().signInWithEmailAndPassword(user, senha)
     //   .then((snapshot)=>{
     //     AsyncStorage.setItem('id', snapshot.user.uid);
@@ -24,14 +21,14 @@ export default function Login({navigation}) {
         
     // })
     //   .catch(()=>{null});
-      AsyncStorage.getItem('name').then(name=>{
-        if(name){setUser(name); handleLogin}
-  }
-  )
-        AsyncStorage.getItem('user').then(user=>{
-          if(user){navigation.navigate('Principal', {user})}
-    }
-    )
+  //     AsyncStorage.getItem('name').then(name=>{
+  //       if(name){setUser(name); handleLogin}
+  // }
+  // )
+  //       AsyncStorage.getItem('user').then(user=>{
+  //         if(user){navigation.navigate('Principal', {user})}
+  //   }
+  //   )
  
     }, [])
    async function handleSocialButtonGoogle() {
@@ -63,14 +60,13 @@ export default function Login({navigation}) {
       }).catch(()=>{setLogar('não foi possível fazer o login')})
     */}
   async function handleLogin(){
-    firebase.auth().signInWithEmailAndPassword(user, senha)
-    .then((snapshot)=>{
-      AsyncStorage.setItem('id', snapshot.user.uid);
-      navigation.navigate('Principal').catch(()=>{setLogar('email ou senha incorreto')});
-      
-      
-  })
-    .catch(()=>{null});
+    const userlogin = {email: user,password: senha }
+    firebaseSvc.login(userlogin,
+      ()=>{ 
+      navigation.navigate('Principal')},
+       ()=>{
+      console.log('login incorreto')}
+    )
       /*await AsyncStorage.clear();
       const response  =await api.post('/devs', {username: user});
       const {_id} = response.data;

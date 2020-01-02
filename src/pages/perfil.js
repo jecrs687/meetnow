@@ -2,64 +2,21 @@ import React,{useState, useEffect} from 'react';
 import {AsyncStorage,View,Text,SafeAreaView, Image, StyleSheet, TouchableOpacity} from 'react-native';
 import api from '../services/api';
 import {Ionicons} from '@expo/vector-icons';
-import * as firebase from  'firebase';
+import  FirebaseSvc from    '../services/FirebaseSvc';
 
 import { ScrollView } from 'react-native-gesture-handler';
 export default function Curtir({navigation}){
     const [perfil, setPerfil] = useState({});
     const [avatar, setAvatar] = useState('https://d1bvpoagx8hqbg.cloudfront.net/259/eb0a9acaa2c314784949cc8772ca01b3.jpg');
-    const [id, setId] = useState(firebase.auth().currentUser.uid);
     useEffect(()=>{
-
-        /*async function loadUser(user){
-            const response  =await api.post('/devs', {username: user});
-                setPerfil(response.data)
-            }
-     AsyncStorage.getItem('name').then(name=>{
-        loadUser(name)     
-        });*/
-    AsyncStorage.multiGet(['avatar', 'name','bio','user', 'gosto','desgosto']).then(function (item){            
-        setPerfil({
-        avatar:item[0][1] ,
-        name: item[1][1],
-        bio: item[2][1],
-        user: item[3][1],
-        gosto: item[4][1],
-        desgosto: item[5][1],
-
-    });});
-        firebase.storage().ref('/users/profile').child(id+'.jpg').getDownloadURL().then(
-            url=>{
-                setAvatar(url);
-                firebase.database().ref('/users/'+id).child('avatar').set(url);
-                AsyncStorage.setItem('avatar',avatar);
-            }
-        );
-        firebase.database().ref('/users/'+id).on('value', function (snapshot){
-            var {name, bio,  user,gosto, desgosto} = snapshot.toJSON();  
-            setPerfil({
-                avatar:avatar ,
-                name: name,
-                bio: bio,
-                user: user,
-                gosto: gosto,
-                desgosto: desgosto,
-    
-            });
-            })
-    }, [avatar])
+        FirebaseSvc.getPerfil((user)=>{setPerfil(user)})
+    }, [])
 
 
 
     async function handleReturn(){
-       // await AsyncStorage.clear();
         navigation.navigate('Config')
     }
-
-
-    /*async function abrirPerfil(){
-       navigation.push('Perfil', users[0]._id);
-    }*/
 
     function printPerfil({avatar, nome,bio,user, gosto, desgosto}){
         return(
@@ -77,15 +34,15 @@ export default function Curtir({navigation}){
                     <Text style={styles.user}>{user}</Text>
                     <ScrollView>
 
-                    <View style={styles.footBio}>
-                    <Ionicons name="ios-bookmarks" size={25} color="#AAA" styles={styles.icon} />
+                    <View style={styles.footBox}>
+                    <Ionicons name="ios-bookmarks" size={25} color="#687" styles={styles.icon} />
                     <Text style={styles.bio}>{bio}</Text></View>
-                    <View style={styles.footGostos}>
-                    <Ionicons name="ios-heart" size={25} color="#AAA" styles={styles.icon} />
+                    <View style={styles.footBox}>
+                    <Ionicons name="ios-heart" size={25} color="#e33" styles={styles.icon} />
                     <Text style={styles.gostos}>{gosto}</Text>
                     </View>
-                    <View style={styles.footDesgostos}>
-                    <Ionicons name="ios-heart-dislike" size={25} color="#AAA" styles={styles.icon} />
+                    <View style={styles.footBox}>
+                    <Ionicons name="ios-heart-dislike" size={25} color="#1eee" styles={styles.icon} />
                     <Text style={styles.gostos}>{desgosto}</Text>
                     </View>
                     </ScrollView>
@@ -97,7 +54,7 @@ export default function Curtir({navigation}){
 
     return(
     <View style={styles.container}>
-        {printPerfil({avatar: perfil.avatar, nome:perfil.name, bio:perfil.bio, user:perfil.user, gosto: perfil.gosto, desgosto: perfil.desgosto})}
+        {printPerfil({avatar: perfil.avatar!=null? perfil.avatar:avatar, nome:perfil.name, bio:perfil.bio, user:perfil.email, gosto: perfil.gostos, desgosto: perfil.desgostos})}
     </View>
     );
 }
@@ -166,7 +123,7 @@ const styles = StyleSheet.create(
         icon:{
         alignSelf:'center',
         },
-        footBio:{
+        footBox:{
             alignItems:'center',
             marginBottom:12, 
             flexDirection:'row',
@@ -183,20 +140,7 @@ const styles = StyleSheet.create(
             },
             
         },
-        footGostos:{
-            marginBottom:12, 
-            alignItems:'center',
 
-            flexDirection:'row',
-            justifyContent:'space-between',
-
-        },
-        footDesgostos:{
-            marginBottom:12, 
-            alignItems:'center',
-            flexDirection:'row',
-            justifyContent:'space-between',
-        },
         gostos:{
             margin:20,
         },
