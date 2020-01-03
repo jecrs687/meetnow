@@ -91,7 +91,7 @@ export class UserCard extends React.Component {
           <Image style={styles.avatar} source={{uri:this.state.user.avatar}}/>
           <View>
             <Text style={styles.name}>{this.state.user.name}</Text>
-            <Text style={{color:'#444444',}}>{'@'+this.state.user.apelido}</Text>
+            <Text style={{color:'#444444',}}>{'@'+this.state.user.nick}</Text>
           </View>
         </View>
                <Carousel

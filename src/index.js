@@ -13,52 +13,12 @@ export default function Login({navigation}) {
     useEffect(()=>{
       firebaseSvc.uid?
       navigation.navigate('Principal'):null
-    //   firebase.auth().signInWithEmailAndPassword(user, senha)
-    //   .then((snapshot)=>{
-    //     AsyncStorage.setItem('id', snapshot.user.uid);
-    //     navigation.navigate('Principal').catch(()=>{setLogar('email ou senha incorreto')});
-        
-        
-    // })
-    //   .catch(()=>{null});
-  //     AsyncStorage.getItem('name').then(name=>{
-  //       if(name){setUser(name); handleLogin}
-  // }
-  // )
-  //       AsyncStorage.getItem('user').then(user=>{
-  //         if(user){navigation.navigate('Principal', {user})}
-  //   }
-  //   )
- 
+
     }, [])
    async function handleSocialButtonGoogle() {
-      /*GoogleSignin.signInAsync()
-        .then((data) => {
-          // Create a new Firebase credential with the token
-          const credential = firebase.auth.GoogleAuthProvider.credential(data.idToken, data.accessToken);
-          // Login with the credential
-          console.log (firebase.auth().signInWithCredential(credential));
-        })
-        .then((user) => {
-          // If you need to do anything with the user, do it here
-          // The user will be logged in automatically by the
-          // `onAuthStateChanged` listener we set up in App.js earlier
-        })
-        .catch((error) => {
-          const { code, message } = error;
-          // For details of error codes, see the docs
-          // The message contains the default Firebase string
-          // representation of the error
-        });*/
     }
     async function handleSocialButtonGithub(){
-     /* var provider = new firebase.auth.GithubAuthProvider();
-      firebase.auth().signinwith(provider).then((snapshot)=>{
-        console.log(snapshot.user.uid);
-        navigation.navigate('Principal');
-        AsyncStorage.setItem('id', snapshot.user.uid);
-      }).catch(()=>{setLogar('não foi possível fazer o login')})
-    */}
+}
   async function handleLogin(){
     const userlogin = {email: user,password: senha }
     firebaseSvc.login(userlogin,
@@ -67,12 +27,7 @@ export default function Login({navigation}) {
        ()=>{
       console.log('login incorreto')}
     )
-      /*await AsyncStorage.clear();
-      const response  =await api.post('/devs', {username: user});
-      const {_id} = response.data;
-      await AsyncStorage.setItem('user',_id);
-      await AsyncStorage.setItem('name',user);
-      navigation.navigate('Principal');*/
+
   }
   async function handleCriar(){
     navigation.navigate('CriarConta');

@@ -14,7 +14,7 @@ var height=Dimensions.get('window').height;
 export default function Curtir({navigation}){
     const [uid, setUId] = useState('');
     const [users, setUsers] = useState([]);
-    const [matchDev, setMatchDev] = useState(false);
+    const [match, setMatch] = useState(false);
     const [refresh, setRefresh] = useState(false);
 
     async function handleLogout(){
@@ -22,22 +22,23 @@ export default function Curtir({navigation}){
         navigation.navigate('Login')
     }
     useEffect(()=>{
-        FirebaseSvc.obterFeed((retorno)=>{setUsers(retorno)})        
+        FirebaseSvc.getFeed((retorno)=>{setUsers(retorno)})   
+        firebaseSvc.getMatch((retorno)=>{setMatch(retorno);})     
     }, []);
 
     
-    function match(){
+    function deuMatch(){
         return(
-                matchDev && (
+                match && (
                 <View style={styles.matchContainer}>
                     <View style={styles.matchImage}>
                         <Text style={{fontSize:20, color:'#ddd', fontWeight:'bold'}}>Deu match!!!</Text>
                     </View>
-                    <Image style={styles.matchAvatar} source={{ uri: matchDev.avatar}} />
-                    <Text style={styles.matchName}>{matchDev.name}</Text>
-                    <Text style={styles.matchBio}>{matchDev.bio}</Text>
+                    <Image style={styles.matchAvatar} source={{ uri: match.avatar}} />
+                    <Text style={styles.matchName}>{match.name}</Text>
+                    <Text style={styles.matchBio}>{match.bio}</Text>
                     
-                    <TouchableOpacity onPress={() => setMatchDev(false)}>
+                    <TouchableOpacity onPress={() => setMatch(false)}>
                         <Text style={styles.closeMatch}>Fechar</Text>
                     </TouchableOpacity>
                 </View> ) 
@@ -57,13 +58,15 @@ export default function Curtir({navigation}){
        navigation.push('Perfil', users[0]._id); 
     }*/
 
-    async function handledeslike(id){
-        firebaseSvc.handleDeslike(id)
-
+    async function handledeslike(_id){
+        firebaseSvc.handleDeslike(_id)
+        setUsers(users.filter((currentValue)=>{return currentValue._id!=_id}))
         }
     
     async function handlelike( _id){
-        firebaseSvc.handleLike(id)
+        firebaseSvc.handleLike(_id)
+        setUsers(users.filter((currentValue)=>{return currentValue._id!=_id}))
+
     }
     
     return(
@@ -81,7 +84,7 @@ export default function Curtir({navigation}){
         listUsers()
         :<Text style={styles.empty}>acabou :(</Text>}
         </ScrollView>
-            {match()}
+            {deuMatch()}
             </View>
     </SafeAreaView>
     );

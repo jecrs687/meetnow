@@ -25,7 +25,7 @@ class Chat extends React.Component {
   get user() {
     return {
       name: this.props.navigation.state.params.name,
-      email: this.props.navigation.state.params.email,
+      nick: this.props.navigation.state.params.nick,
       avatar: this.props.navigation.state.params.avatar,
       id: this.props.navigation.state.params.id,
       _id: this.props.navigation.state.params.id, // need for gifted-chat
@@ -41,7 +41,7 @@ class Chat extends React.Component {
         <Image source={{uri: this.user.avatar, cache:'force-cache'}} style={styles.avatar}/>
         <View>
         <Text style={styles.name}>{this.user.name}</Text>
-        <Text style={styles.user}>{this.user.name}</Text>
+        <Text style={styles.user}>{this.user.nick}</Text>
         </View>
         </View>
         </View>);
@@ -50,7 +50,7 @@ class Chat extends React.Component {
         <GiftedChat
         messages={this.state.messages}
         placeholder="escreva algo..."
-        onSend={(messages)=>{firebaseSvc.send({messages: messages, id: this.props.navigation.state.params.id})}}
+        onSend={(messages)=>{firebaseSvc.send({messages: messages, id: this.props.navigation.state.params.conversationId})}}
         loadEarlier={true}
         textInputStyle={{height:100}}
         showAvatarForEveryMessage={true}
@@ -77,11 +77,11 @@ class Chat extends React.Component {
     firebaseSvc.refOn(message =>
       this.setState(previousState => ({
         messages: GiftedChat.append(previousState.messages, message),
-      })),()=>(this.props.navigation.state.params.id)
+      })),()=>(this.props.navigation.state.params.conversationId)
       )
   }
   componentWillUnmount() {
-    firebaseSvc.refOff(this.props.navigation.state.params.id);
+    firebaseSvc.refOff(this.props.navigation.state.params.conversationId);
   }
 }
 const styles = StyleSheet.create(

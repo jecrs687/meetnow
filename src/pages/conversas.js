@@ -1,99 +1,30 @@
-import React,{useEffect} from 'react';
+import React,{useEffect,useState} from 'react';
 import {SafeAreaView, Text, View, Image,StyleSheet,ScrollView,TouchableOpacity, AsyncStorage} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import firebaseSvc from '../services/FirebaseSvc';
+
 
 
 export default function Conversas({navigation}){  
-
-    const list = [
-        
-        {
-          id:'node-23',
-
-            name: 'Node-23',
-            avatar_url: 'https://avatars0.githubusercontent.com/u/54945311?v=4',
-            subtitle: 'rola ou enrola?'
-          },
-          {
-            id:'tiago',
-
-            name: 'TiagoTR',
-            avatar_url: 'https://avatars2.githubusercontent.com/u/48908903?v=4',
-            subtitle: 'bicho, nem te conto'
-          },
-          {
-            id:'note45',
-
-            name: 'Note45',
-            avatar_url: 'https://avatars0.githubusercontent.com/u/41867280?v=4',
-            subtitle: 'sendo sincero, gosto muito de ******!'
-          },
-          {
-            id: 'IsaacRamos1',
-
-            name: 'IsaacRamos1',
-            avatar_url: 'https://avatars3.githubusercontent.com/u/46172558?v=4',
-            subtitle: 'bora comer coxinha?'
-          },
-          {
-            name: 'Node-23',
-            avatar_url: 'https://avatars0.githubusercontent.com/u/54945311?v=4',
-            subtitle: 'rola ou enrola?'
-          },
-          {
-            name: 'TiagoTR',
-            avatar_url: 'https://avatars2.githubusercontent.com/u/48908903?v=4',
-            subtitle: 'bicho, nem te conto'
-          },
-          {
-            name: 'Note45',
-            avatar_url: 'https://avatars0.githubusercontent.com/u/41867280?v=4',
-            subtitle: 'sendo sincero, gosto muito de ******!'
-          },
-          {
-            name: 'IsaacRamos1',
-            avatar_url: 'https://avatars3.githubusercontent.com/u/46172558?v=4',
-            subtitle: 'bora comer coxinha?'
-          },
-          {
-            name: 'Node-23',
-            avatar_url: 'https://avatars0.githubusercontent.com/u/54945311?v=4',
-            subtitle: 'rola ou enrola?'
-          },
-          {
-            name: 'TiagoTR',
-            avatar_url: 'https://avatars2.githubusercontent.com/u/48908903?v=4',
-            subtitle: 'bicho, nem te conto'
-          },
-          {
-            name: 'Note45',
-            avatar_url: 'https://avatars0.githubusercontent.com/u/41867280?v=4',
-            subtitle: 'sendo sincero, gosto muito de ******!'
-          },
-          {
-            id:'18DcxytjOZOepNotEUccEo9sjV72',
-            name: 'IsaacRamos1',
-            avatar_url: 'https://avatars3.githubusercontent.com/u/46172558?v=4',
-            subtitle: 'bora comer coxinha?'
-          },
-
-          
-      ]
-     async function abrirConversa({id, name, avatar, email}){
-      navigation.navigate('Conversa',{id: id, name:name, avatar:avatar, email:email});
+  const [list, setList] = useState(false);
+  useEffect(()=>{
+    firebaseSvc.getConversas((retorno)=>{setList(retorno);})}     
+    ,[])
+     async function abrirConversa({id, name, avatar, nick,conversationId}){
+      navigation.navigate('Conversa',{id: id, name:name, avatar:avatar, nick:nick, conversationId:conversationId});
     }
     return(
 
     <SafeAreaView style={{paddingTop:30}}>
                 <ScrollView>
 
-        {list.map(({name, avatar_url, subtitle, id}, index)=>(
-            <TouchableOpacity key={index} style={styles.button} onPress={()=>{abrirConversa({id:id, name:name, avatar: avatar_url, email:"emanuel@gmail.com"})}}>
+        {list && list.map(({name, avatar, nick, id,conversationId}, index)=>(
+            <TouchableOpacity key={index} style={styles.button} onPress={()=>{abrirConversa({id, name, avatar, nick,conversationId})}}>
             <View style={styles.containerConversa}>
-                <Image style={styles.avatar}  source={{uri: avatar_url, cache:'force-cache'}}/>
+                <Image style={styles.avatar}  source={{uri: avatar, cache:'force-cache'}}/>
                 <View style={styles.foot}>
                 <Text style={styles.nome}>{name}</Text>
-                <Text style={styles.mensagem}>{subtitle}</Text>
+                <Text style={styles.mensagem}>{nick}</Text>
                 </View>
                 <Ionicons name="ios-arrow-forward" size={25} color="#AAA" />
             </View>

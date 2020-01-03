@@ -12,7 +12,13 @@ class FirebaseSvc {
       console.log("firebase apps already running...")
     }
   }
+  get uid() {
+    return (firebase.auth().currentUser||{}).uid;
+  }
 
+  get ref() {
+    return firebase.database().ref('Messages');
+  }
   login = async(user, success_callback, failed_callback) => {
     console.log("logging in");
     const output = await firebase.auth().signInWithEmailAndPassword(user.email, user.password)
@@ -20,28 +26,150 @@ class FirebaseSvc {
   }
   handleLike = ( _id)=> {
     const id=firebase.auth().currentUser.uid
-    firebase.database().ref(_id).child('likes').on('value',(snapshot)=>{
-      console.log(snapshot)
+    firebase.database().ref('users/'+_id).child('likes').on('value',(snapshot)=>{
+      snapshot = snapshot.toJSON()
+      for(var i in snapshot){
+        if(snapshot[i]==id){
+          const idDaConversa=uuid.v4()
+          firebase.database().ref('users/'+_id).child('matchs').push(id)
+          firebase.database().ref('users/'+id).child('matchs').push(_id)
+          firebase.database().ref('users/'+id).child('conversas/'+idDaConversa).set(_id);
+          firebase.database().ref('users/'+_id).child('conversas/'+idDaConversa).set(id);
+          }
+      }
     })
-    firebase.database().ref(id).child('likes').push(_id)
+    firebase.database().ref('users/'+_id).child('likes').off()
+    
+    firebase.database().ref('users/'+id).child('likes').on('value',
+    (snapshot)=>{
+      snapshot = snapshot.toJSON()
+      for(var i in snapshot){
+        if(snapshot[i]==_id){
+         return;
+        }
+      }
+      firebase.database().ref('users/'+id).child('likes').push(_id);
+    }
+    )
+
+    firebase.database().ref('users/'+id).child('deslikes').off()
+    firebase.database().ref('users/'+id).child('deslikes').on('value',
+    (snapshot)=>{
+      snapshot = snapshot.toJSON()
+      for(var i in snapshot){
+        if(snapshot[i]==_id){
+         firebase.database().ref('users/'+id).child('deslikes/'+i).remove();
+        }
+      }
+    }
+    )
+    firebase.database().ref('users/'+id).child('deslikes').off()
+    firebase.database().ref('users/'+id).child('likes').off()
+    firebase.database().ref('/user/'+id).off();
+    firebase.database().ref('/user/'+_id).off();
+
+
   }
   handleDeslike = (_id)=> {
     const id=firebase.auth().currentUser.uid
-    firebase.database().ref(id).child('deslikes').push(_id)
+    firebase.database().ref('users/'+id).child('deslikes').off()
+
+    firebase.database().ref('users/'+id).child('deslikes').on('value',
+    (snapshot)=>{
+      snapshot = snapshot.toJSON()
+      for(var i in snapshot){
+        if(snapshot[i]==_id){
+          return;
+        }
+      }
+      firebase.database().ref('users/'+id).child('deslikes').push(_id);
+    }
+    )
+    firebase.database().ref('users/'+id).child('deslikes').off()
+
+    firebase.database().ref('users/'+id).child('likes').on('value',
+    (snapshot)=>{
+      snapshot = snapshot.toJSON()
+      for(var i in snapshot){
+        if(snapshot[i]==_id){
+         firebase.database().ref('users/'+id).child('likes/'+i).remove();
+        }
+      }
+    }
+    )
+    firebase.database().ref('users/'+id).child('likes').off()
+    firebase.database().ref('/user/'+id).off();
+    firebase.database().ref('/user/'+_id).off();
   }
-  obterFeed = (callback)=> {
+  
+  getFeed = (callback)=> {
+    var notUsers=[];
+    const id=firebase.auth().currentUser.uid
           firebase.database().ref('/users').on('value', function (snapshot){
             var users=[];            
             snapshot = snapshot.toJSON()
-            snapshot[firebase.auth().currentUser.uid]
             delete snapshot[firebase.auth().currentUser.uid]
-            
             for (var childSnapshot in snapshot){
                 const retorno = snapshot[childSnapshot]
                 users.push(retorno);
             };
+            firebase.database().ref('/users/'+id).child('likes').on('value', (snapshot)=>{
+              snapshot=snapshot.toJSON();
+
+              for(var i in snapshot){
+                notUsers.push(snapshot[i]);
+              }
+            })
+            firebase.database().ref('/users/'+id).child('likes').off();
+
+            firebase.database().ref('users/'+id).child('deslikes').on('value',
+            (snapshot)=>{
+              snapshot=snapshot.toJSON();
+              for(var i in snapshot){
+                notUsers.push(snapshot[i]);
+              }
+            })
+            firebase.database().ref('/users/'+id).child('deslikes').off();
             callback(users)
           })
+          firebase.database().ref('/users/'+id).off()
+  }
+  getMatch = (callback)=>{
+    const id=firebase.auth().currentUser.uid
+      firebase.database().ref('users/'+id).child('matchs').on('value', 
+      (snapshot)=>{
+      snapshot = snapshot.toJSON()
+      for(var i in snapshot){
+      firebase.database().ref('users/'+id).child('matched').push(snapshot[i]);
+      firebase.database().ref('users/'+id).child('matchs/'+i).remove();
+      firebase.database().ref('users/'+snapshot[i]).on('value', 
+      (snapshot)=>{
+        const{avatar, name,bio} = snapshot.toJSON();
+        callback({avatar,name,bio});
+      })
+      }
+      }
+      
+      )
+  }
+  getConversas = (callback)=>{
+    var conversas=[];
+    const id=firebase.auth().currentUser.uid
+    firebase.database().ref('users/'+id).child('conversas').on('value'||'child_added',
+    (snapshot)=>{
+      snapshot = snapshot.toJSON()
+      for(var i in snapshot){
+          firebase.database().ref('users').child(snapshot[i]).on('value',
+          (snapshot)=>{
+            const {_id,avatar, nick, bio, name}=snapshot.val()
+            conversas.push({id:_id,avatar,nick,bio,name, conversationId:i})
+          })
+          firebase.database().ref('users').child(snapshot[i]).off();
+      }
+      callback(conversas);
+    }
+    )
+
   }
   getPerfil = (callback)=>{
     var user = firebase.auth().currentUser;
@@ -58,7 +186,7 @@ class FirebaseSvc {
       callback(user);
     })
   }
-
+  
   observeAuth = () =>
     firebase.auth().onAuthStateChanged(this.onAuthStateChanged);
 
@@ -115,18 +243,8 @@ class FirebaseSvc {
         .storage()
         .ref('avatar')
         .child(uuid.v4());
-      const task = ref.put(blob);
-    
-      return new Promise((resolve, reject) => {
-        task.on(
-          'state_changed',
-          () => {
-              /* noop but you can track the progress here */
-          },
-          reject /* this is where you would put an error callback! */,
-          () => resolve(task.snapshot.downloadURL)
-        );
-      });
+      const task = await ref.put(blob);
+        return ref.getDownloadURL().then((url)=>{return url})
     } catch (err) {
       console.log('uploadImage try/catch error: ' + err.message); //Cannot load an empty url
     }
@@ -135,6 +253,7 @@ class FirebaseSvc {
   updateAvatar = (url) => {
     //await this.setState({ avatar: url });
     var userf = firebase.auth().currentUser;
+    firebase.database().ref('users/'+userf.uid+'/avatar').set(url)
     if (userf != null) {
       userf.updateProfile({ avatar: url})
       .then(function() {
@@ -158,13 +277,7 @@ class FirebaseSvc {
     });
   }
 
-  get uid() {
-    return (firebase.auth().currentUser || {}).uid;
-  }
 
-  get ref() {
-    return firebase.database().ref('Messages');
-  }
 
   parse = snapshot => {
     const { timestamp: numberStamp, text, user } = snapshot.val();
@@ -202,7 +315,7 @@ class FirebaseSvc {
         user,
         createdAt: this.timestamp,
       };
-      this.ref.child(id+"").push(message)
+      this.ref.child(id).push(message)
     }
   };
 

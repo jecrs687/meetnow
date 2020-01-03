@@ -1,9 +1,11 @@
 import React from 'react';
-import { Constants, ImagePicker, Permissions } from 'expo';
 import {Image,
   StyleSheet, Text,View,
   Button, ImageEditor,KeyboardAvoidingView,TouchableOpacity
 } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+import Constants from 'expo-constants';
+import * as Permissions from 'expo-permissions';
 import logo from '../assets/logo.png'
 import { TextInput } from 'react-native-paper';
 import { createStackNavigator } from 'react-navigation';
@@ -52,60 +54,31 @@ super(props);
     this.props.navigation.navigate('Login')
   };
 
-
-  onImageUpload = async () => {
-    const { status: cameraRollPerm } = await Permissions.askAsync(
-      Permissions.CAMERA_ROLL
-    );
-    try {
-      // only if user allows permission to camera roll
-      if (cameraRollPerm === 'granted') {
-        console.log('choosing image granted...');
-        let pickerResult = await ImagePicker.launchImageLibraryAsync({
-          allowsEditing: true,
-          aspect: [4, 3],
-        });
-        console.log(
-          'ready to upload... pickerResult json:' + JSON.stringify(pickerResult)
-        );
-
-        var wantedMaxSize = 150;
-        var rawheight = pickerResult.height;
-        var rawwidth = pickerResult.width;
-        
-        var ratio = rawwidth / rawheight;
-        var wantedwidth = wantedMaxSize;
-        var wantedheight = wantedMaxSize/ratio;
-        // check vertical or horizontal
-        if(rawheight > rawwidth){
-            wantedwidth = wantedMaxSize*ratio;
-            wantedheight = wantedMaxSize;
-        }
-        console.log("scale image to x:" + wantedwidth + " y:" + wantedheight);
-        let resizedUri = await new Promise((resolve, reject) => {
-          ImageEditor.cropImage(pickerResult.uri,
-          {
-              offset: { x: 0, y: 0 },
-              size: { width: pickerResult.width, height: pickerResult.height },
-              displaySize: { width: wantedwidth, height: wantedheight },
-              resizeMode: 'contain',
-          },
-          (uri) => resolve(uri),
-          () => reject(),
-          );
-        });
-        let uploadUrl = await firebaseSvc.uploadImage(resizedUri);
-        //let uploadUrl = await firebaseSvc.uploadImageAsync(resizedUri);
-        await this.setState({ avatar: uploadUrl });
-        console.log(" - await upload successful url:" + uploadUrl);
-        console.log(" - await upload successful avatar state:" + this.state.avatar);
-        await firebaseSvc.updateAvatar(uploadUrl); //might failed
+  getPermissionAsync = async () => {
+    if (Constants.platform.ios) {
+      const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+      if (status !== 'granted') {
+        alert('Sorry, we need camera roll permissions to make this work!');
       }
-    } catch (err) {
-      console.log('onImageUpload error:' + err.message);
-      alert('Upload image error:' + err.message);
     }
-  };
+  }
+
+  _pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1
+    })
+    let uploadUrl = await firebaseSvc.uploadImage(result.uri);
+    //let uploadUrl = await firebaseSvc.uploadImageAsync(resizedUri);
+    await this.setState({ avatar: uploadUrl });
+    await firebaseSvc.updateAvatar(uploadUrl); //might failed
+    ;}
+    componentDidMount() {
+      this.getPermissionAsync();
+      console.log('permissão concedida');
+    }
 
 
   handleNext(){
@@ -243,11 +216,14 @@ textBio(){
 textAvatar(){
 return (
   <React.Fragment>
-
+ {()=>{
+   this.state.avatar &&
+   <Image source={{ uri: this.state.avatar }} style={{ width: 200, height: 200 }} />
+ }}
   <Button
           title="foto de pergil"
           style={styles.buttonText}
-          onPress={()=>{this.onImageUpload()}}
+          onPress={this._pickImage}
 />
 <TextInput 
     autoCapitalize="none"
