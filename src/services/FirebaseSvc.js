@@ -104,13 +104,15 @@ class FirebaseSvc {
   
   getFeed = (callback)=> {
     var notUsers=[];
+    var user={};
+    var users=[];            
     const id=firebase.auth().currentUser.uid
           firebase.database().ref('/users').on('value', function (snapshot){
-            var users=[];            
             snapshot = snapshot.toJSON()
             delete snapshot[firebase.auth().currentUser.uid]
-            for (var childSnapshot in snapshot){
-                const retorno = snapshot[childSnapshot]
+            for (var i in snapshot){
+                const retorno = snapshot[i]
+
                 users.push(retorno);
             };
             firebase.database().ref('/users/'+id).child('likes').on('value', (snapshot)=>{
@@ -126,6 +128,15 @@ class FirebaseSvc {
             (snapshot)=>{
               snapshot=snapshot.toJSON();
               for(var i in snapshot){
+                const {bio,desgostos,gostos,fotos,name,email,avatar,apelido} = snapshot[i]
+                user.bio = bio;
+                user.desgostos = desgostos;
+                user.gostos=gostos;
+                user.fotos=fotos;
+                user.name = name;
+                user.email = email;
+                user.avatar = avatar;
+                user.apelido = apelido;
                 notUsers.push(snapshot[i]);
               }
             })
@@ -171,9 +182,9 @@ class FirebaseSvc {
     )
 
   }
-  getPerfil = (callback)=>{
-    var user = firebase.auth().currentUser;
-    firebase.database().ref('users').child(user.uid).on('value', snapshot=>{
+  getPerfil = (getId,callback)=>{
+    var user = {};
+    firebase.database().ref('users').child(getId()).on('value', snapshot=>{
       const {bio, desgostos,gostos, fotos, name, email, avatar, apelido} = snapshot.toJSON();
       user.bio = bio;
       user.desgostos = desgostos;

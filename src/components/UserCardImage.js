@@ -24,18 +24,7 @@ export class UserCardImage extends React.Component {
     };
   }
 
-  // tamanho(){
-    
-  //     Image.getSize({uri:this.props.foto},
-  //       (width,height)=>{
-  //           if(height!=this.state.theHeigth){}; 
-  //           if(width!=this.state.theWidth){}
-  //           console.log('height:'+height);
-  //           console.log('width:'+width)
 
-  //         }
-  //     )       
-  // }
   tamanho(){
     proporcao=this.state.theWidth/this.state.theHeigth
     proporcaoDaTela=(width-60)/(height-300)

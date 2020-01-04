@@ -75,4 +75,4 @@ const Principal = createMaterialBottomTabNavigator({
   },
   
 });
-export default createAppContainer(createSwitchNavigator({Login,Principal,CriarConta }))
+export default createAppContainer(createSwitchNavigator({Login,Principal,CriarConta}))

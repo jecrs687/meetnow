@@ -3,10 +3,10 @@ import FlipCard from 'react-native-flip-card'
 import { Ionicons,FontAwesome,MaterialCommunityIcons} from '@expo/vector-icons';
 import {Button,PanResponder,AsyncStorage,View,Text,SafeAreaView, Image, StyleSheet, TouchableOpacity, Dimensions,StatusBar, ScrollView} from 'react-native';
 var width=Dimensions.get('window').width;
+import {Perfil} from './perfilCard'
 import Carousel,{Pagination} from 'react-native-snap-carousel';
 import {UserCardImage} from './UserCardImage'
 
-import Swiper from 'react-native-swiper'
 
 var height=Dimensions.get('window').height;
 
@@ -129,10 +129,7 @@ export class UserCard extends React.Component {
   backView(){
     return(          
       <View>
-      <Image style={styles.backAvatar} source={{uri:this.state.user.avatar}}/>
-      <TouchableOpacity style={styles.button} onPress={()=>{this.setState({isFlipped:!this.state.isFlipped}); this.props.handle();}}>
-                      <MaterialCommunityIcons name='rotate-3d' size={30} color='black'/>
-      </TouchableOpacity>
+          <Perfil user={this.state.user} fliper={()=>{this.setState({isFlipped: !this.state.isFlipped})}}/> 
       </View>)
   }
   

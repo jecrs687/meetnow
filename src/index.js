@@ -38,7 +38,7 @@ export default function Login({navigation}) {
       enabled={true}
       style={styles.container}
       >
-    <Image source={logo} style={styles.logo}/>
+    <Image source={logo} resizeMode='contain' style={styles.logo}/>
     
     {logar? <Text style={{color:'#ff3399',fontWeight:'bold' }}>{logar}</Text>:null}
     <TextInput 
