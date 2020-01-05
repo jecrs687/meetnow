@@ -8,7 +8,7 @@ import Curtir from './pages/curtir';
 import perfilUser from './pages/perfil';
 import listConversas from './pages/conversas';
 import Conversa from './components/conversa';
-import eventos from './pages/eventos';
+import {MapEventos} from './components/MapEventos';
 import Login from './index'
 import CriarConta from './pages/criarConta'
 
@@ -25,7 +25,7 @@ const Principal = createMaterialBottomTabNavigator({
       </View>
       </React.Fragment>
     )} },    
-  Eventos: { screen: eventos, navigationOptions:{
+  Eventos: { screen: MapEventos, navigationOptions:{
     tabBarLabel:'Eventos',
     tabBarIcon:({tintColor})=>(
         <React.Fragment>
@@ -34,8 +34,8 @@ const Principal = createMaterialBottomTabNavigator({
       </View>
       </React.Fragment>
     )} },
-  Calendario: { screen: eventos, navigationOptions:{
-    tabBarLabel:'Eventos',
+  Calendario: { screen: MapEventos, navigationOptions:{
+      tabBarLabel:'Calendario',
     tabBarVisible:'visible',
     tabBarIcon:({tintColor,focused})=>(
     (

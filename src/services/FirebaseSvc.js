@@ -291,18 +291,18 @@ class FirebaseSvc {
 
 
   parse = snapshot => {
-    const { timestamp: numberStamp, text, user } = snapshot.val();
+    const { CreatedAt, text, user } = snapshot.val();
     const { key: id } = snapshot;
     const { key: _id } = snapshot; //needed for giftedchat
-    const timestamp = new Date(numberStamp);
 
     const message = {
       id,
       _id,
-      timestamp,
+      CreatedAt:new Date(CreatedAt),
       text,
       user,
     };
+    console.log(message)
     return message;
   };
 

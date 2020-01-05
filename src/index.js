@@ -11,6 +11,13 @@ export default function Login({navigation}) {
     const [senha, setSenha] = useState('123123');
 
     useEffect(()=>{
+      const userlogin = {email: user,password: senha }
+      firebaseSvc.login(userlogin,
+        ()=>{ 
+        navigation.navigate('Principal')},
+         ()=>{
+        console.log('login incorreto')}
+      )
       firebaseSvc.uid?
       navigation.navigate('Principal'):null
 
