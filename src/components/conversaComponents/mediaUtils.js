@@ -1,4 +1,5 @@
 import { Linking } from 'expo'
+import FirebaseSvc from '../../services/FirebaseSvc'
 import * as Location from 'expo-location'
 import * as Permissions from 'expo-permissions'
 import * as ImagePicker from 'expo-image-picker'
@@ -39,12 +40,14 @@ export async function getLocationAsync(onSend) {
 export async function pickImageAsync(onSend) {
   if (await getPermissionAsync(Permissions.CAMERA_ROLL)) {
     const result = await ImagePicker.launchImageLibraryAsync({
-      allowsEditing: true,
-      aspect: [4, 3],
+      mediaTypes:ImagePicker.MediaTypeOptions.All,
+      quality:1
     })
-
     if (!result.cancelled) {
-      onSend([{ image: result.uri }])
+      const url = await FirebaseSvc.uploadPhotoMessage(result.uri);
+      if(result.type=='image'){
+      onSend([{ image: url }])}
+      else{onSend([{ video: url }])}
       return result.uri
     }
   }
@@ -53,12 +56,11 @@ export async function pickImageAsync(onSend) {
 export async function takePictureAsync(onSend) {
   if (await getPermissionAsync(Permissions.CAMERA)) {
     const result = await ImagePicker.launchCameraAsync({
-      allowsEditing: true,
-      aspect: [4, 3],
     })
 
     if (!result.cancelled) {
-      onSend([{ image: result.uri }])
+      const url = await FirebaseSvc.uploadPhotoMessage(result.uri);
+      onSend([{ image: url }])
       return result.uri
     }
   }

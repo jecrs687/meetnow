@@ -17,7 +17,7 @@ export default class NavBarCustom extends React.Component {
     <SafeAreaView style={{ backgroundColor: '#f5f5f5' }}>
     <View style={styles.topBar}>
         <View style={styles.topBarItens}>
-        <TouchableOpacity onPress={()=>{this.props.navigation.navigate('listConversas');}} style={styles.buttonReturn}>
+        <TouchableOpacity onPress={()=>{this.props.return()}} style={styles.buttonReturn}>
         <Ionicons name="ios-arrow-back" size={25} color="#AAA" />
         </TouchableOpacity>
         <Image source={{uri: this.user.avatar, cache:'force-cache'}} style={styles.avatar}/>
@@ -56,8 +56,9 @@ const styles = StyleSheet.create(
       elevation:10,
       flexDirection:'row',
       alignItems:'center',
-      height:70,
-      padding:10,
+      height:50,
+      paddingVertical:5,
+      paddingHorizontal:10,
       shadowColor:'#000',
       shadowOpacity: 0.05,
       shadowRadius:2,
@@ -69,7 +70,7 @@ const styles = StyleSheet.create(
   topBarItens:{        
     flexDirection:'row',
     alignItems:'center',
-    marginTop:25,
+  
   },
   buttonReturn:{
     height:40,

@@ -5,6 +5,8 @@ import { createMaterialBottomTabNavigator } from 'react-navigation-material-bott
 import Config from './pages/config';
 import { Ionicons, MaterialIcons,MaterialCommunityIcons} from '@expo/vector-icons';
 import Curtir from './pages/curtir';
+import createAnimatedSwitchNavigator from 'react-navigation-animated-switch';
+
 import perfilUser from './pages/perfil';
 import listConversas from './pages/conversas';
 import Conversa from './components/conversa';
@@ -13,7 +15,7 @@ import Login from './index'
 import CriarConta from './pages/criarConta'
 
 
-const conversar = createSwitchNavigator({listConversas,Conversa})
+const conversar = createAnimatedSwitchNavigator({listConversas,Conversa})
 const Perfil = createSwitchNavigator({perfilUser,Config})
 const Principal = createMaterialBottomTabNavigator({
   Curtir: { screen: Curtir, navigationOptions:{

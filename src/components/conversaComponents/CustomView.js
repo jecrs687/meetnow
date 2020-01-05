@@ -1,16 +1,18 @@
 import { Linking } from 'expo'
 import PropTypes from 'prop-types'
 import React from 'react'
+import MapView, { Marker } from 'react-native-maps'
 import {
   Platform,
   StyleSheet,
   TouchableOpacity,
-  ViewPropTypes,
+  ViewPropTypes
 } from 'react-native'
+import * as VideoThumbnails from 'expo-video-thumbnails';
+import { Video } from 'expo-av';
 
-const MapView = Platform.select({
-  default: () => require('react-native-maps'),
-})
+import { View,Text } from 'react-native'
+
 
 export default class CustomView extends React.Component {
   static propTypes = {
@@ -26,8 +28,8 @@ export default class CustomView extends React.Component {
   }
 
   openMapAsync = async () => {
-    const { currentMessage: { location = {} } = {} } = this.props
-    console.log(this.props)
+    const { currentMessage: currentMessage } = this.props
+    const {location } = currentMessage
     const url = Platform.select({
       ios: `http://maps.apple.com/?ll=${location.latitude},${location.longitude}`,
       default: `http://maps.google.com/?q=${location.latitude},${location.longitude}`,
@@ -45,7 +47,26 @@ export default class CustomView extends React.Component {
   }
 
   render() {
-    const { currentMessage, containerStyle, mapViewStyle } = this.props
+    const { currentMessage, containerStyle, mapViewStyle } = this.props;
+    if(currentMessage.video){
+      return(
+
+        <View style={[styles.videoView, {overflow:'hidden'}]}>
+        <Video
+          source={{ uri: currentMessage.video }}
+          rate={1.0}
+          volume={1.0}
+          isMuted={true}
+          resizeMode="cover"
+          shouldPlay={false}
+          isLooping={false}
+          useNativeControls={true}
+          posterSource={{uri:'https://firebasestorage.googleapis.com/v0/b/meetnow-c6097.appspot.com/o/assets%2Floading.gif?alt=media&token=45c85754-4293-4116-8508-52a5c64c14bb'}}
+          style={{ width: 240, height: 240 }}
+        />
+      </View>
+      )
+    }
     if (currentMessage.location) {
       return (
         <TouchableOpacity
@@ -60,9 +81,13 @@ export default class CustomView extends React.Component {
               latitudeDelta: 0.0922,
               longitudeDelta: 0.0421,
             }}
-            scrollEnabled={false}
-            zoomEnabled={false}
-          />
+            scrollEnabled={true}
+            zoomEnabled={true}
+          >
+            <Marker coordinate={currentMessage.location} title='você está aqui!'>
+              <View style={{backgroundColor:'#11ffff', height:15,width:15, borderRadius:8, borderWidth:1,borderStyle:'solid', borderColor:'white'}}/>
+            </Marker>          
+          </MapView>
         </TouchableOpacity>
       )
     }
@@ -73,9 +98,15 @@ export default class CustomView extends React.Component {
 const styles = StyleSheet.create({
   container: {},
   mapView: {
-    width: 150,
-    height: 100,
+    width: 200,
+    height: 200,
     borderRadius: 13,
     margin: 3,
   },
+  videoView:{
+    width:240,
+    height:240,
+    borderRadius: 13,
+    margin: 3,
+  }
 })

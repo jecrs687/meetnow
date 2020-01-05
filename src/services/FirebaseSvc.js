@@ -245,6 +245,21 @@ class FirebaseSvc {
       });
   }
 
+  uploadPhotoMessage = async uri => {
+    console.log('got image to upload. uri:' + uri);
+    try {
+      const response = await fetch(uri);
+      const blob = await response.blob();
+      const ref = firebase
+        .storage()
+        .ref('messages')
+        .child(uuid.v4());
+      const task = await ref.put(blob);
+        return ref.getDownloadURL().then((url)=>{return url})
+    } catch (err) {
+      console.log('uploadImage try/catch error: ' + err.message); //Cannot load an empty url
+    }
+  }
   uploadImage = async uri => {
     console.log('got image to upload. uri:' + uri);
     try {
@@ -291,7 +306,7 @@ class FirebaseSvc {
 
 
   parse = snapshot => {
-    const { createdAt, text, user } = snapshot.val();
+    const { createdAt, text, user,image, video, location,received,sent } = snapshot.val();
     const { key: id } = snapshot;
     const { key: _id } = snapshot; //needed for giftedchat
 
@@ -301,7 +316,12 @@ class FirebaseSvc {
       createdAt:new Date(createdAt),
       text,
       user,
+      sent,
+      received
     };
+    image? message.image=image:null;
+    video? message.video=video:null;
+    location? message.location=location:null;
     return message;
   };
 
@@ -321,7 +341,7 @@ class FirebaseSvc {
     for (let i = 0; i < messages.length; i++) {
       const { text, user } = messages[i];
         messages[i].createdAt= this.timestamp;
-      
+        messages[i].sent=true;
       this.ref.child(id).push(messages[i])
     }
   };

@@ -17,9 +17,9 @@ import {
 export default class CustomActions extends React.Component {
   onActionsPress = () => {
     const options = [
-      'Choose From Library',
-      'Take Picture',
-      'Send Location',
+      'Galeria',
+      'Câmera',
+      'Localização',
       'Cancel',
     ]
     const cancelButtonIndex = options.length - 1

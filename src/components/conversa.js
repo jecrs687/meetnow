@@ -46,6 +46,7 @@ class Chat extends React.Component {
     this._isMounted = false
   }
   onLoadEarlier = () => {
+    
     this.setState(() => {
       return {
         isLoadingEarlier: true,
@@ -114,12 +115,13 @@ class Chat extends React.Component {
 
   render() {
 
-    const topContent = (     <NavBar user={this.user}/>);
+    const topContent = (     <NavBar user={this.user} return={()=>{this.props.navigation.navigate('listConversas');}}/>);
     const mainContent = (
 
       <GiftedChat
         messages={this.state.messages}
         onSend={this.onSend}
+        placeholder='mensagem...'
         loadEarlier={this.state.loadEarlier}
         onLoadEarlier={this.onLoadEarlier}
         isLoadingEarlier={this.state.isLoadingEarlier}
@@ -129,23 +131,32 @@ class Chat extends React.Component {
         onLongPressAvatar={user => {}}
         onPressAvatar={() => {}}
         keyboardShouldPersistTaps='never'
-        renderAccessory={Platform.OS === 'web' ? null : this.renderAccessory}
+        renderMessageVideo={()=>{}}
+        // renderAccessory={Platform.OS === 'web' ? null : this.renderAccessory}
         renderActions={this.renderCustomActions}
-        // renderBubble={this.renderBubble}
+        renderBubble={this.renderBubble}
         renderSystemMessage={this.renderSystemMessage}
-        // renderCustomView={this.renderCustomView}
+        renderCustomView={this.renderCustomView}
         timeTextStyle={{ left: { color: '#555' }, right: { color: '#0cff' } }}
         isTyping={this.state.isTyping}
       />
     );
-
+      if(Platform.OS=='android'){
       return (
       <KeyboardAvoidingView style={{flex: 1}} behavior="padding"  keyboardVerticalOffset={80} enabled>
             
             {topContent}
            {mainContent} 
       </KeyboardAvoidingView>
-    );
+    );}else{
+      return (
+        <SafeAreaView style={{flex: 1}} behavior="padding"  keyboardVerticalOffset={80} enabled>
+              
+              {topContent}
+             {mainContent} 
+        </SafeAreaView>
+      );
+    }
 
   }
  
