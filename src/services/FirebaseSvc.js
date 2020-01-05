@@ -320,12 +320,9 @@ class FirebaseSvc {
   send = ({messages, id}) => {
     for (let i = 0; i < messages.length; i++) {
       const { text, user } = messages[i];
-      const message = {
-        text,
-        user,
-        createdAt: this.timestamp,
-      };
-      this.ref.child(id).push(message)
+        messages[i].createdAt= this.timestamp;
+      
+      this.ref.child(id).push(messages[i])
     }
   };
 

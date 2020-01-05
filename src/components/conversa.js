@@ -1,9 +1,14 @@
-import React from 'react';
-import { GiftedChat } from 'react-native-gifted-chat'; // 0.3.0
+import { Asset } from 'expo-asset';
+import { AppLoading , Linking} from 'expo';
+import React, { Component } from 'react'
+import { Bubble, GiftedChat, SystemMessage, IMessage } from 'react-native-gifted-chat'; // 0.3.0
 import {Text, View, Image,StyleSheet,SafeAreaView,KeyboardAvoidingView,TouchableOpacity,Platform} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import firebaseSvc from '../services/FirebaseSvc';
-
+import AccessoryBar from './conversaComponents/AccessoryBar'
+import CustomActions from './conversaComponents/CustomActions'
+import CustomView from './conversaComponents/CustomView'
+import NavBar from './conversaComponents/NavBar'
 
 
 class Chat extends React.Component {
@@ -11,19 +16,91 @@ class Chat extends React.Component {
   constructor(props) {
     super(props);
     this.state={
-      recarregar:null,
-    }
+        messages:null,
+        inverted: false,
+        step: 0,
+        messages: [],
+        loadEarlier: true,
+        typingText: null,
+        isLoadingEarlier: false,
+        appIsReady: false,
+        isTyping: false,
+      }
 
   }
-  
-  static navigationOptions = ({ navigation }) => ({
-    title: (navigation.state.params || {}).name || 'Chat!',
-  });
-
-  state = {
-    messages: [],
+  onSend=(messages)=>{
+    firebaseSvc.send({messages: messages, id: this.props.navigation.state.params.conversationId})
   };
+  onSendFromUser = (messages) => {
+    const createdAt = new Date()
+    const messagesToUpload = messages.map(message => ({
+      ...message,
+      user:this.user,
+      createdAt,
+      _id: this.user._id,
+    }))
+    this.onSend(messagesToUpload)
+  }
+  _isMounted = false;
+  componentWillUnmount() {
+    this._isMounted = false
+  }
+  onLoadEarlier = () => {
+    this.setState(() => {
+      return {
+        isLoadingEarlier: true,
+      }
+    })}
+  componentDidMount() {
+    this._isMounted = true
+    // init with only system messages
+    this.setState({
+      messages: messagesData, // messagesData.filter(message => message.system),
+      appIsReady: true,
+      isTyping: false,
+    })
+  }
+  parsePatterns = (_linkStyle) => {
+    return [
+      {
+        pattern: /#(\w+)/,
+        style: { textDecorationLine: 'underline', color: 'darkorange' },
+        onPress: () => alert('eu amo o meetnow'),
+      },
+    ]
+  }
+  renderCustomView(props) {
+    return <CustomView {...props} />
+  }
+  setIsTyping = () => {
+    this.setState({
+      isTyping: !this.state.isTyping,
+    })
+  }
+  renderAccessory = () => (
+    <AccessoryBar onSend={this.onSendFromUser} isTyping={this.setIsTyping} />
+  )
 
+  renderCustomActions = props =>
+    Platform.OS === 'web' ? null : (
+      <CustomActions {...props} onSend={this.onSendFromUser} />
+    )
+    renderBubble = (props) => {
+      return <Bubble {...props} />
+    }
+    renderSystemMessage = props => {
+      return (
+        <SystemMessage
+          {...props}
+          containerStyle={{
+            marginBottom: 15,
+          }}
+          textStyle={{
+            fontSize: 14,
+          }}
+        />
+      )
+    }  
 
   get user() {
     return {
@@ -36,44 +113,40 @@ class Chat extends React.Component {
   }
 
   render() {
-    const topContent = (        <View style={styles.topBar}>
-        <View style={styles.topBarItens}>
-        <TouchableOpacity onPress={()=>{this.props.navigation.navigate('listConversas');}} style={styles.buttonReturn}>
-        <Ionicons name="ios-arrow-back" size={25} color="#AAA" />
-        </TouchableOpacity>
-        <Image source={{uri: this.user.avatar, cache:'force-cache'}} style={styles.avatar}/>
-        <View>
-        <Text style={styles.name}>{this.user.name}</Text>
-        <Text style={styles.user}>{this.user.nick}</Text>
-        </View>
-        </View>
-        </View>);
+
+    const topContent = (     <NavBar user={this.user}/>);
     const mainContent = (
 
-        <GiftedChat
+      <GiftedChat
         messages={this.state.messages}
-        placeholder="escreva algo..."
-        onSend={(messages)=>{firebaseSvc.send({messages: messages, id: this.props.navigation.state.params.conversationId})}}
-        loadEarlier={true}
-        onInputTextChanged={(text)=>{this.setState({recarregar:!this.state.recarregar})}}
-        textInputStyle={{height:100}}
-        showAvatarForEveryMessage={true}
+        onSend={this.onSend}
+        loadEarlier={this.state.loadEarlier}
+        onLoadEarlier={this.onLoadEarlier}
+        isLoadingEarlier={this.state.isLoadingEarlier}
+        parsePatterns={this.parsePatterns}
         user={this.user}
+        scrollToBottom
+        onLongPressAvatar={user => {}}
+        onPressAvatar={() => {}}
+        keyboardShouldPersistTaps='never'
+        renderAccessory={Platform.OS === 'web' ? null : this.renderAccessory}
+        renderActions={this.renderCustomActions}
+        // renderBubble={this.renderBubble}
+        renderSystemMessage={this.renderSystemMessage}
+        // renderCustomView={this.renderCustomView}
+        timeTextStyle={{ left: { color: '#555' }, right: { color: '#0cff' } }}
+        isTyping={this.state.isTyping}
       />
     );
-    if (Platform.OS === 'android') {
+
       return (
       <KeyboardAvoidingView style={{flex: 1}} behavior="padding"  keyboardVerticalOffset={80} enabled>
+            
             {topContent}
            {mainContent} 
       </KeyboardAvoidingView>
     );
-    } else {
-      return (<SafeAreaView style={{flex: 1}}>
-         {topContent} 
-        {mainContent}
-      </SafeAreaView>)
-    } 
+
   }
  
 
