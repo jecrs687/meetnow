@@ -10,6 +10,9 @@ class Chat extends React.Component {
 
   constructor(props) {
     super(props);
+    this.state={
+      recarregar:null,
+    }
 
   }
   
@@ -52,6 +55,7 @@ class Chat extends React.Component {
         placeholder="escreva algo..."
         onSend={(messages)=>{firebaseSvc.send({messages: messages, id: this.props.navigation.state.params.conversationId})}}
         loadEarlier={true}
+        onInputTextChanged={(text)=>{this.setState({recarregar:!this.state.recarregar})}}
         textInputStyle={{height:100}}
         showAvatarForEveryMessage={true}
         user={this.user}
