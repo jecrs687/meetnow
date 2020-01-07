@@ -13,6 +13,8 @@ export default function Conversas({navigation}){
      async function abrirConversa({id, name, avatar, nick,conversationId}){
       navigation.navigate('Conversa',{id: id, name:name, avatar:avatar, nick:nick, conversationId:conversationId});
     }
+    
+    
     return(
 
     <SafeAreaView style={{paddingTop:30}}>

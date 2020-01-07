@@ -11,7 +11,7 @@ import {
 import * as VideoThumbnails from 'expo-video-thumbnails';
 import { Video } from 'expo-av';
 
-import { View,Text } from 'react-native'
+import { View,Text, Image } from 'react-native'
 
 
 export default class CustomView extends React.Component {
@@ -67,6 +67,22 @@ export default class CustomView extends React.Component {
       </View>
       )
     }
+    // if(currentMessage.image){
+    //   return(
+    //     <TouchableOpacity
+    //     style={[styles.container, containerStyle]}
+    //     onPress={null}
+    //   >
+    //   <View style={[styles.videoView, {overflow:'hidden'}]}>
+    //     <Image 
+    //     style={{ width: 240, height: 240 }}
+        
+    //     source={{uri:currentMessage.image, cache:'force-cache'}} 
+    //     defaultSource={{uri: 'https://firebasestorage.googleapis.com/v0/b/meetnow-c6097.appspot.com/o/assets%2Floading.gif?alt=media&token=45c85754-4293-4116-8508-52a5c64c14bb', height:150, width:150}, 1}/>
+    //   </View>
+    //   </TouchableOpacity>
+    //   )
+    // }
     if (currentMessage.location) {
       return (
         <TouchableOpacity

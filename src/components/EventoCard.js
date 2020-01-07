@@ -1,7 +1,7 @@
 import React,{ Component } from 'react';
 import { Text, View,StyleSheet, Dimensions, Image, Modal,  TouchableOpacity,SafeAreaView} from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-
+import {TimerEventocard} from './timerEventoCard'
 var width=Dimensions.get('window').width;
 var height=Dimensions.get('window').height;
 
@@ -11,7 +11,6 @@ export class EventoCard extends React.Component {
     super(props);
     this.state = {
       modalVisible:false,
-
     };
   }
 
@@ -29,7 +28,7 @@ export class EventoCard extends React.Component {
         this.setState({modalVisible:!this.state.modalVisible});
       }}>
         <View>
-       <Image source={{uri: this.props.evento.image}} resizeMode= 'cover' style={{width: width}} />
+       <Image source={{uri: this.props.evento.image}} resizeMode= 'cover' style={{width:width, height:height/2}} />
             <View style={styles.boxEventoInfo}>
             <Text style={styles.title}>{this.props.evento.title}</Text>
             <Text style={styles.subtitle}>{this.props.evento.subtitle}</Text>
@@ -53,7 +52,7 @@ export class EventoCard extends React.Component {
         }}>
             <Image source={{uri: this.props.evento.image}} style={{height:100, width:100}} resizeMode='contain'/>
             <View style={styles.boxEventoInfo}>
-            
+             <TimerEventocard date={this.props.evento.date}/>
             <Text style={styles.title}>{this.props.evento.title}</Text>
             <Text style={styles.subtitle}>{this.props.evento.subtitle}</Text>
             

@@ -22,7 +22,9 @@ export class MapEventos extends React.Component {
       locationUser:{  latitude: 37.78825,
         longitude: -122.4324,},
           eventos:[
-            { title: 'evento1',
+            
+            { date: new Date(2020,10,10,10,10,0,1),
+              title: 'evento1',
              subtitle:'subtitle evento 1',
              image:'https://image.freepik.com/foto-gratuito/mano-della-folla-in-discoteca_23-2147717087.jpg',
              bio:"lorem ipson teste for the lorem for the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun afor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun afor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun afor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun afor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun afor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun afor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun afor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun afor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun afor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun aipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun and lorem ipsun ksksk teste for lorem ipsun and loren isun , quando lorem",
@@ -31,6 +33,7 @@ export class MapEventos extends React.Component {
               longitude: 14.495372838699072,
             }},
            {      
+            date: new Date(2020,10,10,10,10,0,1),
             title: 'evento1',
              subtitle:'subtitle evento 1',
              bio:"lorem ipson teste nd lorem ipsun ksksk teste for lorem ipsun and loren isufor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun anfor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun afor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun afor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun afor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun afor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun afor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun afor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun afor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun a , quando lorem",
@@ -41,6 +44,7 @@ export class MapEventos extends React.Component {
               longitude: 14.492272838699072,
             }},
             {      
+              date: new Date(2020,10,10,10,10,0,1),
               title: 'evento1',
              subtitle:'subtitle evento 1',
              bio:"lorem ipson teste for the lorfor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun afor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun afor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun afor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun afor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun afor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun afor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun afor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun afor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun aem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun and lorem ipsun ksksk teste for lorem ipsun and loren isun , quando lorem",

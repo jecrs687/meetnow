@@ -25,11 +25,12 @@ class Chat extends React.Component {
         isLoadingEarlier: false,
         appIsReady: false,
         isTyping: false,
+        recarregar:false,
       }
 
   }
   onSend=(messages)=>{
-    firebaseSvc.send({messages: messages, id: this.props.navigation.state.params.conversationId})
+   return firebaseSvc.send({messages: messages, id: this.props.navigation.state.params.conversationId})
   };
   onSendFromUser = (messages) => {
     const createdAt = new Date()
@@ -39,7 +40,7 @@ class Chat extends React.Component {
       createdAt,
       _id: this.user._id,
     }))
-    this.onSend(messagesToUpload)
+    return this.onSend(messagesToUpload)
   }
   _isMounted = false;
   componentWillUnmount() {
@@ -58,7 +59,7 @@ class Chat extends React.Component {
     this.setState({
       messages: messagesData, // messagesData.filter(message => message.system),
       appIsReady: true,
-      isTyping: false,
+      isTyping: true,
     })
   }
   parsePatterns = (_linkStyle) => {
@@ -114,13 +115,17 @@ class Chat extends React.Component {
   }
 
   render() {
-
+    // if (!this.state.appIsReady) {
+    //   return <AppLoading />
+    // }
     const topContent = (     <NavBar user={this.user} return={()=>{this.props.navigation.navigate('listConversas');}}/>);
     const mainContent = (
 
       <GiftedChat
+       alwaysShowSend
         messages={this.state.messages}
         onSend={this.onSend}
+        onInputTextChanged={(text)=>{this.setState({recarregar:!this.state.recarregar})}}
         placeholder='mensagem...'
         loadEarlier={this.state.loadEarlier}
         onLoadEarlier={this.onLoadEarlier}
@@ -132,6 +137,8 @@ class Chat extends React.Component {
         onPressAvatar={() => {}}
         keyboardShouldPersistTaps='never'
         renderMessageVideo={()=>{}}
+        imageStyle={{height:200,width:200}}
+        //renderInputToolbar={(item)=>{console.log(item); return null}}
         // renderAccessory={Platform.OS === 'web' ? null : this.renderAccessory}
         renderActions={this.renderCustomActions}
         renderBubble={this.renderBubble}

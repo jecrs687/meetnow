@@ -44,11 +44,14 @@ export async function pickImageAsync(onSend) {
       quality:1
     })
     if (!result.cancelled) {
+      var reference = await onSend([{image:'https://firebasestorage.googleapis.com/v0/b/meetnow-c6097.appspot.com/o/assets%2Floading.gif?alt=media&token=45c85754-4293-4116-8508-52a5c64c14bb'}]);
       const url = await FirebaseSvc.uploadPhotoMessage(result.uri);
       if(result.type=='image'){
-      onSend([{ image: url }])}
-      else{onSend([{ video: url }])}
-      return result.uri
+        reference.child('image').set(url); 
+        }else{
+          reference.child('image').set(null);
+          reference.child('video').set(url);
+        }
     }
   }
 }

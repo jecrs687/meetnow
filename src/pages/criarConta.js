@@ -1,16 +1,17 @@
 import React from 'react';
 import {Image,
   StyleSheet, Text,View,
-  Button, ImageEditor,KeyboardAvoidingView,TouchableOpacity
+  Button,KeyboardAvoidingView,TouchableOpacity
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 import logo from '../assets/logo.png'
 import { TextInput } from 'react-native-paper';
-import { createStackNavigator } from 'react-navigation';
 import firebaseSvc from '../services/FirebaseSvc';
-import {AntDesign} from '@expo/vector-icons'
+import {AntDesign, FontAwesome} from '@expo/vector-icons'
+import { LinearGradient } from 'expo-linear-gradient';
+import {ChangeImageProfile} from '../components/ChangeImageProfile'
 
 
 
@@ -22,7 +23,7 @@ class CreateAccount extends React.Component {
 constructor(props){
 super(props);
   this.state = {
-    index:0,
+    index:1,
     name: '',
     apelido:'',
     email: '',
@@ -66,7 +67,6 @@ super(props);
 
   _pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1
@@ -90,7 +90,7 @@ super(props);
     this.setState({index: 1})
       : 
       this.state.index==1? 
-      this.setState({index: 2})
+      this.setState({index: 3})
         :
         this.state.index==2? 
          this.setState({index: 3})
@@ -111,7 +111,7 @@ super(props);
       this.props.navigation.navigate('Login')
       :
       this.state.index==1? 
-      this.setState({index: 0})
+      this.props.navigation.navigate('Login')
             :
       this.state.index==2? 
       this.setState({index: 1})
@@ -166,8 +166,12 @@ super(props);
     )}
 textpassword(){
   return (
-    <React.Fragment>
-      
+    <React.Fragment> 
+      <ChangeImageProfile avatar={this.state.avatar} style={{position:'absolute',bottom:225}} changeAvatar={(avatar)=>{this.setState({avatar:avatar})}}/>
+    
+    <View style={{top:50,bottom:0,left:25,right:25,position:'absolute'}}>
+    <View style={styles.inputBox}>
+    <FontAwesome name='user-o' size={30} style={styles.icon}/>
     <TextInput 
     underlineColor='pink'
     autoCapitalize="none"
@@ -176,6 +180,9 @@ textpassword(){
     value={this.state.name}
     onChangeText={this.onChangeTextName}
     style={styles.input}/>
+    </View>
+    <View style={styles.inputBox}>
+    <FontAwesome name='github-alt' size={30} style={styles.icon}/>
         <TextInput 
     underlineColor='pink'
     autoCapitalize="none"
@@ -184,6 +191,9 @@ textpassword(){
     value={this.state.apelido}
     onChangeText={this.onChangeTextApelido}
     style={styles.input}/>
+       </View>
+    <View style={styles.inputBox}>
+    <FontAwesome name='envelope' size={30} style={styles.icon}/>
       <TextInput 
     underlineColor='pink'
     autoCapitalize="none"
@@ -192,16 +202,21 @@ textpassword(){
     value={this.state.email}
     onChangeText={this.onChangeTextEmail}
     style={styles.input}/>
+       </View>
+    <View style={styles.inputBox}>
+    <FontAwesome name='lock' size={30} style={styles.icon}/>
     <TextInput 
       underlineColor='pink'
       autoCapitalize="none"
       autoCorrect={false}
       placeholder="password"
+      secureTextEntry={true}
       textContentType='password'
       value={this.state.password}
       onChangeText={this.onChangeTextPassword}
       style={styles.input}/>
-
+      </View>
+      </View>
       </React.Fragment>
     )}
 textBio(){
@@ -286,8 +301,13 @@ textDesgostos(){
       enabled={true}
       style={styles.container}
       >
-    <Image source={logo} resizeMode='contain' style={styles.logo}/>
-    
+                <LinearGradient
+        // colors={['#4c669f', '#3b5998', '#192f6a']}
+        colors={['#ffccf0','#ffcce0']}
+        style={{ padding: 15, alignItems:'center',justifyContent:'center', width:'100%',height:'40%' ,minHeight:200,borderRadius: 5 ,position:"absolute", top:0}}
+        >
+              <Image source={logo} resizeMode='contain' style={styles.logo}/>
+      </LinearGradient>    
     <View style={styles.containerInfo}>
           {this.tela(this.state.index)}
       </View>
@@ -305,52 +325,48 @@ const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFill,
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#ffffff',
     alignItems: 'center',
-    justifyContent: 'center',
-    padding:30,
+    justifyContent: 'flex-end',
+
+  },
+  inputBox:{
+    marginHorizontal:25,
+    flexDirection:'row',
+    alignItems:'center',
+    alignContent:'center',
+    justifyContent:'center',
+    marginBottom:10
+  },
+  icon:{
+    alignSelf: 'center'
   },
   logo:{
-    height:80,
-    width:150,
+    height:'100%',
+    width:'100%',
+    alignSelf:'center'
   },
   containerInfo:{
     backgroundColor:'white',
-    height:300,
-    width:300,
+    height:'50%',
+    minHeight:250,
+    width:'90%',
     margin:10,
     alignItems:'center',
-    justifyContent:'space-around',
-    borderRadius:30,
-    borderTopLeftRadius:0,
+    borderRadius:10,
     padding:20,
-    shadowColor: "#000",
-    shadowOffset: {
-        width: 4,
-        height: 4,
-    },
-    shadowOpacity: 0.32,
-    shadowRadius: 5.46,    
-    elevation: 9, 
-  },
-  title: {
-    marginTop: offset,
-    marginLeft: offset,
-    fontSize: offset,
+
   },
   input:{
     height:46,
-    alignSelf:'stretch',
-    backgroundColor: '#f9f9f9',
-    borderWidth:0.1,
-    borderRadius:4,
-    borderColor:'#aaaaaa',
-    marginTop:20,
-    paddingHorizontal:15,
+    width:'100%',
+    alignSelf:'center',
+    marginLeft:15,
+    backgroundColor: '#FFF',
     
   },  
   inputGrande:{
-    height:300,
+    height:240,
     padding:10,
     textAlignVertical:'top',
     textAlign:'left',
@@ -371,6 +387,8 @@ const styles = StyleSheet.create({
   },
   buttons:{
     marginTop:5,
+    marginHorizontal:25,
+    marginBottom:25,
     flexDirection:'row',
     alignSelf:'stretch',
     alignContent:'flex-end',

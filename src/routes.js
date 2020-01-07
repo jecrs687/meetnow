@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, Image} from 'react-native';
-import{createAppContainer, createSwitchNavigator} from 'react-navigation'
+import{createAppContainer, createSwitchNavigator, withNavigation, NavigationEvents, NavigationProvider} from 'react-navigation'
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
 import Config from './pages/config';
 import { Ionicons, MaterialIcons,MaterialCommunityIcons} from '@expo/vector-icons';
@@ -14,8 +14,30 @@ import {MapEventos} from './components/MapEventos';
 import Login from './index'
 import CriarConta from './pages/criarConta'
 
+const transitionConfig = () => {
+  return {
+    transitionSpec: {
+      duration: 750,
+      easing: Easing.out(Easing.poly(4)),
+      timing: Animated.timing,
+      useNativeDriver: true,
+    },
+    screenInterpolator: sceneProps => {      
+      const { layout, position, scene } = sceneProps
 
-const conversar = createAnimatedSwitchNavigator({listConversas,Conversa})
+      const thisSceneIndex = scene.index
+      const width = layout.initWidth
+
+      const translateX = position.interpolate({
+        inputRange: [thisSceneIndex - 1, thisSceneIndex],
+        outputRange: [width, 0],
+      })
+
+      return { transform: [ { translateX } ] }
+    },
+  }
+}
+const conversar = createAnimatedSwitchNavigator({listConversas:{screen:listConversas},Conversa:{screen:Conversa}}, {initialRouteName:'listConversas',transitionConfig})
 const Perfil = createSwitchNavigator({perfilUser,Config})
 const Principal = createMaterialBottomTabNavigator({
   Curtir: { screen: Curtir, navigationOptions:{
@@ -41,17 +63,22 @@ const Principal = createMaterialBottomTabNavigator({
     tabBarVisible:'visible',
     tabBarIcon:({tintColor,focused})=>(
     (
-    <React.Fragment>
+      <React.Fragment>      
+        <View  style={{ backgroundColor: 'transparent', bottom:30,}}
+      pointerEvents={'box-none'}>
     <MaterialCommunityIcons name="calendar-heart" size={25} color={tintColor}/>
+    </View>
     </React.Fragment>
+
       )
     )} },
   Conversas: { screen: conversar, navigationOptions:{
     tabBarLabel:'Conversas',
-    tabBarVisible:'hidden',
+    tabBarVisible:()=>{console.log(NavigationProvider);return 'hidden';},
     tabBarIcon:({tintColor})=>(
         <React.Fragment>
     <View>
+      
     <Ionicons name="ios-chatbubbles" size={25} color={tintColor}/>
       </View>
       </React.Fragment>
@@ -68,13 +95,14 @@ const Principal = createMaterialBottomTabNavigator({
 }, {
 
    shifting:true,
+   backBehavior:'history',
   initialRouteName: 'Curtir',
   activeColor: '#ffcce0',
   barStyle:{
     height:50,
       backgroundColor:'#FFF',
-      overflow:'visible',
-  },
+    overflow:'visible'
+    },
   
 });
 export default createAppContainer(createSwitchNavigator({Login,Principal,CriarConta}))

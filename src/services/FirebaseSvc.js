@@ -304,9 +304,9 @@ class FirebaseSvc {
   }
 
 
-
   parse = snapshot => {
-    const { createdAt, text, user,image, video, location,received,sent } = snapshot.val();
+
+    const { createdAt, text, user,image, video, location,received,sent } = snapshot.text? snapshot:snapshot.val();
     const { key: id } = snapshot;
     const { key: _id } = snapshot; //needed for giftedchat
 
@@ -337,12 +337,16 @@ class FirebaseSvc {
   }
   
   // send the message to the Backend
-  send = ({messages, id}) => {
+  send =({messages, id}) => {
+
     for (let i = 0; i < messages.length; i++) {
       const { text, user } = messages[i];
         messages[i].createdAt= this.timestamp;
-        messages[i].sent=true;
-      this.ref.child(id).push(messages[i])
+       return this.ref.child(id).push(messages[i]).then((value)=>{ 
+        value.child('sent').set(true);
+        return value;
+        }
+       )
     }
   };
 
