@@ -42,6 +42,7 @@ const Perfil = createSwitchNavigator({perfilUser,Config})
 const Principal = createMaterialBottomTabNavigator({
   Curtir: { screen: Curtir, navigationOptions:{
     tabBarLabel:'Curtir',
+    tabBarColor:'white',
     tabBarIcon:({tintColor})=>(
         <React.Fragment>
     <View>
@@ -51,6 +52,7 @@ const Principal = createMaterialBottomTabNavigator({
     )} },    
   Eventos: { screen: MapEventos, navigationOptions:{
     tabBarLabel:'Eventos',
+    tabBarColor:'black',
     tabBarIcon:({tintColor})=>(
         <React.Fragment>
     <View>
@@ -61,10 +63,11 @@ const Principal = createMaterialBottomTabNavigator({
   Calendario: { screen: MapEventos, navigationOptions:{
       tabBarLabel:'Calendario',
     tabBarVisible:'visible',
+    tabBarColor:'white',
     tabBarIcon:({tintColor,focused})=>(
     (
       <React.Fragment>      
-        <View  style={{ backgroundColor: 'transparent', bottom:30,}}
+        <View  style={{ backgroundColor: 'transparent'}}
       pointerEvents={'box-none'}>
     <MaterialCommunityIcons name="calendar-heart" size={25} color={tintColor}/>
     </View>
@@ -74,6 +77,7 @@ const Principal = createMaterialBottomTabNavigator({
     )} },
   Conversas: { screen: conversar, navigationOptions:{
     tabBarLabel:'Conversas',
+    tabBarColor:'white',
     tabBarVisible:()=>{console.log(NavigationProvider);return 'hidden';},
     tabBarIcon:({tintColor})=>(
         <React.Fragment>
@@ -85,6 +89,8 @@ const Principal = createMaterialBottomTabNavigator({
     )} },
   Perfil: { screen: Perfil, navigationOptions:{
       tabBarLabel:'Perfil',
+      tabBarColor:'white',
+      
       tabBarIcon:({tintColor})=>(
         <React.Fragment>
     <View>
@@ -92,12 +98,14 @@ const Principal = createMaterialBottomTabNavigator({
       </View>
       </React.Fragment>
     )} },
-}, {
-
+}, {  
+  sceneAnimationEnabled:true,
    shifting:true,
+   
    backBehavior:'history',
   initialRouteName: 'Curtir',
   activeColor: '#ffcce0',
+  inactiveColor:'#687687',
   barStyle:{
     height:50,
       backgroundColor:'#FFF',

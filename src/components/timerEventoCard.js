@@ -43,16 +43,50 @@ export class TimerEventocard extends React.Component {
   render() {
     return (
         <View style={styles.container}>
-              <Text>{this.state.day}</Text>
-              <Text>{this.state.hours}</Text>
-              <Text>{this.state.minute}</Text>
-              <Text>{this.state.second}</Text>
+              <Text style={[styles.title, styles.text]}>Faltam</Text>
+              <Text style={[styles.Days, styles.text]}>{this.state.day}</Text>
+              <Text style={[styles.Hours, styles.text]}>{this.state.hours<10? '0'+this.state.hours:this.state.hours}</Text>
+              <Text style={[styles.Minute, styles.text]}>{this.state.minute<10? '0'+this.state.minute:this.state.minute}</Text>
+              <Text style={[styles.Second, styles.text]}>{this.state.second<10? '0'+this.state.second:this.state.second}</Text>
         </View>
     );
   }
 }
 const styles = StyleSheet.create(
     {   
+      container:{
+        borderColor:'white',
+        borderWidth:10,
+      },
+      Days:{
+      fontWeight:'bold',
+      fontSize:20,
+      
+    },
+    Hours:{
+      fontWeight:'bold',
+      fontSize:16,
+      bottom:3,
+    },
+    Minute:{
+      fontWeight:'bold',
+      fontSize:14,
+      bottom:6,
+    },
+    Second:{
+      fontWeight:'bold',
+      fontSize:7,
+      bottom:8,
+    },
+    text:{
+      alignSelf:'flex-start',
+      justifyContent:'center',
+      alignItems:'center',
+      alignContent:'center',
+      
+
+      color:'#fff'
+    },
         container:{
             flexDirection:'column',
         }

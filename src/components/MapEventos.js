@@ -1,5 +1,5 @@
 import React,{ Component } from 'react';
-import { Platform,Text, View,StyleSheet, Dimensions, Image,Animated} from 'react-native';
+import { Platform,Text, View,StyleSheet, Dimensions, Animated} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Carousel,{Pagination} from 'react-native-snap-carousel';
 import MapView from 'react-native-maps';
@@ -23,9 +23,9 @@ export class MapEventos extends React.Component {
         longitude: -122.4324,},
           eventos:[
             
-            { date: new Date(2020,10,10,10,10,0,1),
-              title: 'evento1',
-             subtitle:'subtitle evento 1',
+            { date: new Date(2020,3,10,10,10,0,1),
+              title: 'ipsun',
+             subtitle:'ipsun lorem',
              image:'https://image.freepik.com/foto-gratuito/mano-della-folla-in-discoteca_23-2147717087.jpg',
              bio:"lorem ipson teste for the lorem for the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun afor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun afor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun afor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun afor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun afor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun afor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun afor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun afor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun afor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun aipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun and lorem ipsun ksksk teste for lorem ipsun and loren isun , quando lorem",
             location:{  
@@ -33,9 +33,9 @@ export class MapEventos extends React.Component {
               longitude: 14.495372838699072,
             }},
            {      
-            date: new Date(2020,10,10,10,10,0,1),
-            title: 'evento1',
-             subtitle:'subtitle evento 1',
+            date: new Date(2020,1,10,10,10,0,1),
+            title: 'lorem',
+             subtitle:'the loren ipsun',
              bio:"lorem ipson teste nd lorem ipsun ksksk teste for lorem ipsun and loren isufor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun anfor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun afor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun afor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun afor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun afor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun afor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun afor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun afor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun a , quando lorem",
 
              image:'https://image.freepik.com/foto-gratuito/mano-della-folla-in-discoteca_23-2147717087.jpg',
@@ -44,9 +44,9 @@ export class MapEventos extends React.Component {
               longitude: 14.492272838699072,
             }},
             {      
-              date: new Date(2020,10,10,10,10,0,1),
-              title: 'evento1',
-             subtitle:'subtitle evento 1',
+              date: new Date(2020,3,2,10,10,0,1),
+              title: 'loren ipsun',
+             subtitle:'the of ipsun',
              bio:"lorem ipson teste for the lorfor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun afor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun afor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun afor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun afor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun afor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun afor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun afor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun afor the lorem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun aem ipsun,for the lorem ipsun with lorem ipsun, becase lorem ipsun and lorem ipsun ksksk teste for lorem ipsun and loren isun , quando lorem",
 
              image:'https://image.freepik.com/foto-gratuito/mano-della-folla-in-discoteca_23-2147717087.jpg',
@@ -88,19 +88,21 @@ export class MapEventos extends React.Component {
           <EventoCard evento={item}/>
         )
   }
+  
   mudarRegiao=(index)=>{
-
-    this.setState({location: this.state.eventos[index].location})
+    console.log(this.mapView)
+    this.mapView.animateToRegion({
+      latitude: this.state.eventos[index].location.latitude - height/300000,
+    longitude: this.state.eventos[index].location.longitude}, 200);
+    // this.setState({location: this.state.eventos[index].location})
   }
   render() {
     return (
       <View>
        {   this.state.location && 
-       <MapView style={styles.mapStyle} region={{      
-        latitude: this.state.location.latitude-height/300000,
-        longitude: this.state.location.longitude,
-        latitudeDelta: 0.01,
-        longitudeDelta: 0.01,}}>
+       <MapView style={styles.mapStyle}
+       ref = {(ref)=>this.mapView=ref}
+        >
           <Marker coordinate={this.state.locationUser} title='você está aqui!'>
             <View style={{backgroundColor:'#11ffff', height:30,width:30, borderRadius:15, borderWidth:2,borderStyle:'solid', borderColor:'white'}}></View>
           </Marker>
@@ -122,7 +124,7 @@ export class MapEventos extends React.Component {
          sliderWidth={width}
          onSnapToItem={(index) => {this.setState({ activeSlide: index }); this.mudarRegiao(index)} }
          itemWidth={width-75}
-         itemHeight={height/2.5 - 50}
+         itemHeight={height/2.2 - 50}
          layoutCardOffset={3}/>
          </View>
        </View>
