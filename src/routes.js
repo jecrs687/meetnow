@@ -6,7 +6,7 @@ import Config from './pages/config';
 import { Ionicons, MaterialIcons,MaterialCommunityIcons} from '@expo/vector-icons';
 import Curtir from './pages/curtir';
 import createAnimatedSwitchNavigator from 'react-navigation-animated-switch';
-
+//import Call from './components/call';
 import perfilUser from './pages/perfil';
 import listConversas from './pages/conversas';
 import Conversa from './components/conversa';
@@ -42,7 +42,7 @@ const Perfil = createSwitchNavigator({perfilUser,Config})
 const Principal = createMaterialBottomTabNavigator({
   Curtir: { screen: Curtir, navigationOptions:{
     tabBarLabel:'Curtir',
-    tabBarColor:'white',
+    tabBarColor:'transparent',
     tabBarIcon:({tintColor})=>(
         <React.Fragment>
     <View>
@@ -53,6 +53,7 @@ const Principal = createMaterialBottomTabNavigator({
   Eventos: { screen: MapEventos, navigationOptions:{
     tabBarLabel:'Eventos',
     tabBarColor:'black',
+    tabBarVisible:1,
     tabBarIcon:({tintColor})=>(
         <React.Fragment>
     <View>
@@ -107,8 +108,10 @@ const Principal = createMaterialBottomTabNavigator({
   activeColor: '#ffcce0',
   inactiveColor:'#687687',
   barStyle:{
+    zIndex:0,
     height:50,
-      backgroundColor:'#FFF',
+    position:'absolute',
+    backgroundColor:'transparent',
     overflow:'visible'
     },
   

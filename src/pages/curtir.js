@@ -5,7 +5,7 @@ import { Ionicons,FontAwesome} from '@expo/vector-icons';
 import {UserCard} from '../components/UserCard';
 import  FirebaseSvc from    '../services/FirebaseSvc';
 import firebaseSvc from '../services/FirebaseSvc';
-
+import Swiper from 'react-native-swiper'
 
 var width=Dimensions.get('window').width;
 var height=Dimensions.get('window').height;
@@ -16,6 +16,7 @@ export default function Curtir({navigation}){
     const [users, setUsers] = useState([]);
     const [match, setMatch] = useState(false);
     const [refresh, setRefresh] = useState(false);
+    const [indx, setIndex] = useState(0);
 
     async function handleLogout(){
         FirebaseSvc.onLogout()
@@ -50,7 +51,7 @@ export default function Curtir({navigation}){
     function listUsers(){
        return( 
         users.map((user,index)=>(
-            <UserCard key={index} user={user} handle={()=>{setRefresh(!refresh);}} handleLike={(id)=>{handlelike(id)}} handleDeslike={(id)=>{handledeslike(id)}} isFlipped={true} />
+            <UserCard key={index} now={index==indx} user={user} handleLike={(id)=>{handlelike(id)}} handleDeslike={(id)=>{handledeslike(id)}} isFlipped={true} />
         )))
     }
 
@@ -60,12 +61,12 @@ export default function Curtir({navigation}){
 
     async function handledeslike(_id){
         firebaseSvc.handleDeslike(_id)
-        setUsers(users.filter((currentValue)=>{return currentValue._id!=_id}))
+        // setUsers(users.filter((currentValue)=>{return currentValue._id!=_id}))
         }
     
     async function handlelike( _id){
         firebaseSvc.handleLike(_id)
-        setUsers(users.filter((currentValue)=>{return currentValue._id!=_id}))
+        // setUsers(users.filter((currentValue)=>{return currentValue._id!=_id}))
 
     }
     
@@ -76,14 +77,20 @@ export default function Curtir({navigation}){
             <TouchableOpacity onPress={handleLogout} style={styles.icon}>
                     <Ionicons name="ios-log-out" size={30} color="#AAA" />
             </TouchableOpacity>
-            <Image source={logo} style={styles.logo}/>
+            <Image source={logo} style={styles.logo} resizeMode='contain' />
         </View>
         <View style={styles.cardsContainer}>
-        <ScrollView>
+        <Swiper horizontal={false} showsVerticalScrollIndicator showsPagination={false} loop={false} onIndexChanged={index=>setIndex(index)}>
         {users.length>0?
         listUsers()
         :<Text style={styles.empty}>acabou :(</Text>}
-        </ScrollView>
+               {users.length>0?
+        listUsers()
+        :<Text style={styles.empty}>acabou :(</Text>}
+               {users.length>0?
+        listUsers()
+        :<Text style={styles.empty}>acabou :(</Text>}
+        </Swiper>
             {deuMatch()}
             </View>
     </SafeAreaView>
@@ -92,7 +99,9 @@ export default function Curtir({navigation}){
 const styles = StyleSheet.create(
     {   
     topContainer:{
-        backgroundColor:'#FFFFFF',
+        zIndex:1,
+        backgroundColor:'transparent',
+        position:'absolute',
         flexDirection:'row-reverse',
         justifyContent:'space-between',
         alignItems:'center',
@@ -111,11 +120,13 @@ const styles = StyleSheet.create(
         elevation: 3,
     },
     logo:{
+        backgroundColor:'#ffcce0',
         alignSelf:'stretch',
         marginTop:5,
-        height:45,
+        height:50,
         marginHorizontal:20,
-        width:105,
+        width:50,
+        borderRadius:25,
     },
     icon:{
         marginHorizontal:20,
@@ -127,8 +138,10 @@ const styles = StyleSheet.create(
         
     },
         container:{
-            flex: 1,
-            backgroundColor:'#fdfdfd',
+            position:'absolute',
+            height:'100%',
+            width:'100%',
+            backgroundColor:'#111',
             alignItems:'center',
             justifyContent:'space-between'
         },
@@ -238,7 +251,7 @@ const styles = StyleSheet.create(
             marginHorizontal:20,
         },
         matchContainer: {
-            zIndex:100,
+            zIndex:2,
             ...StyleSheet.absoluteFillObject,
             backgroundColor: 'rgba(0,0,0,0.8)',
             justifyContent: 'center',

@@ -20,8 +20,8 @@ export class UserCard extends React.Component {
     this.state = {
       user:this.props.user,
       isFlipped: false,
-      handlelike:false,
       activeSlide:0,
+      handlelike:false,
       handledeslike:false,
     };
   }
@@ -32,9 +32,6 @@ export class UserCard extends React.Component {
             lista.push(value)
         }
     );
-    lista[1]='https://i.pinimg.com/736x/53/63/d2/5363d25443755e636ca5843aa5b141b1.jpg';
-    lista[2]='https://static.paraoscuriosos.com/img/articles/7274/800x800/5b55cfaf66a80_1-1.jpg';
-    lista[3]='https://i.pinimg.com/originals/44/94/80/449480dd65c82761550d7ecaa305aaa9.jpg';
     return(lista)}
 
     get pagination () {
@@ -44,8 +41,9 @@ export class UserCard extends React.Component {
             dotsLength={this.fotos().length}
             activeDotIndex={activeSlide}
             containerStyle={{
+              maxWidth:'40%',
               position:"absolute",
-              bottom:100,
+              bottom:55,
               alignSelf:'center',              
             }}
             dotStyle={{
@@ -58,9 +56,11 @@ export class UserCard extends React.Component {
                 backgroundColor: 'white'
             }}
             inactiveDotStyle={{
-                marginHorizontal: 1,
-                borderColor:'white',
-                borderWidth:1,
+              borderRadius: 5,
+              borderColor:'#888',
+              borderWidth:1,
+              marginHorizontal: 1,
+              backgroundColor: '#333'
                     }}
             inactiveDotOpacity={0.4}
             inactiveDotScale={0.6}
@@ -81,44 +81,49 @@ export class UserCard extends React.Component {
                 shadowOpacity: 0.25,
                 shadowRadius: 3.84,
                 elevation: 5,
-            }}foto={item}/></View>
+            }}midia={item} now={this.props.now &&index == this.state.activeSlide}/></View>
     )
 }
   frontView(){
     return(
-      <View>
-        <View style={[styles.footer,{flexDirection:'row'}]}>
-          <Image style={styles.avatar} source={{uri:this.state.user.avatar}}/>
-          <View>
-            <Text style={styles.name}>{this.state.user.name}</Text>
-            <Text style={{color:'#444444',}}>{'@'+this.state.user.nick}</Text>
-          </View>
-        </View>
+      <View style={styles.cardInfor}>
+                    <View style={styles.Carousel}>
+
                <Carousel
                       layout={'stack'}
                       ref={(c) => { this._carousel = c; }}
                       data={this.fotos()}
+                    
                       renderItem={this.listFotos}
-                      sliderWidth={width-40}
+                      sliderWidth={width}
                       onSnapToItem={(index) => this.setState({ activeSlide: index }) }
-                      itemWidth={width-40}
-                      itemHeight={height-280}
+                      itemWidth={width}
+                      itemHeight={height}
                       layoutCardOffset={3}
 
                     />
-                                    { this.pagination }
+                    { this.pagination }
+
+              </View>
+        <View style={[styles.footer,{flexDirection:'row'}]} pointerEvents='none'>
+          <Image style={styles.avatar} source={{uri:this.state.user.avatar}}/>
+          <View>
+            <Text style={styles.name}>{this.state.user.name}</Text>
+            <Text style={styles.nick}>{'@'+this.state.user.nick}</Text>
+          </View>
+        </View>
 
           <Text style={styles.bio} numberOfLines={3}>{this.state.user.bio}</Text>
           
             <View style={styles.buttonsContainer}>
-                  <TouchableOpacity style={styles.button} onPress={()=>{this.props.handleDeslike(this.props.user._id)}}>
-                      <FontAwesome name='close' size={30} color={this.state.handledeslike? '#d11':'#45a8'} />
+                  <TouchableOpacity style={[styles.button,{opacity:this.state.handledeslike? 0.4:1}]} onPress={()=>{this.setState({handledeslike:!this.state.handledeslike,handlelike:false});this.props.handleDeslike(this.props.user._id); }}>
+                      <FontAwesome name='close' size={30} color='#4df' />
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.button} onPress={()=>{this.setState({isFlipped:!this.state.isFlipped}); this.props.handle();}}>
+                  {/* <TouchableOpacity style={styles.button} onPress={()=>{this.setState({isFlipped:!this.state.isFlipped}); this.props.handle();}}>
                       <MaterialCommunityIcons name='rotate-3d' size={30} color='black'/>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.button} onPress={()=>{this.props.handleLike(this.state.user._id)}}>
-                      <Ionicons name='ios-heart' size={30} color='red'/>
+                  </TouchableOpacity> */}
+                  <TouchableOpacity style={[styles.button, {opacity:this.state.handlelike?0.4:1}]}  onPress={()=>{this.setState({handledeslike:false,handlelike:!this.state.handlelike});this.props.handleLike(this.state.user._id);}}>
+                      <Ionicons name='ios-heart' size={30} color='#d11'/>
                   </TouchableOpacity>
 
             </View>
@@ -136,16 +141,16 @@ export class UserCard extends React.Component {
   render() {
     return(
       <View style={styles.card}>
-<FlipCard 
+{/* <FlipCard 
   friction={6}
   perspective={1000}
   flipHorizontal={true}
   flipVertical={false}
   flip={this.state.isFlipped}
-  clickable={false}>
+  clickable={false}> */}
     {this.frontView()}
-  {this.backView()}
-  </FlipCard>
+  {/* {this.backView()}
+  </FlipCard> */}
   </View>
     )
     
@@ -160,36 +165,30 @@ const styles = StyleSheet.create(
       height:45,
       width:50,
       alignItems:'flex-end',
-      justifyContent:'flex-end',
-      
+     justifyContent:'space-around',      
   },
       card:{
-          borderWidth:0,
-          borderColor:'#DDD',
-          borderTopLeftRadius:2,
-          borderTopRightRadius:40,
-          borderBottomLeftRadius:40,
-          borderBottomRightRadius:40,
-          marginBottom:40,
-          backgroundColor:'#FFFFFF',
-          marginHorizontal:20,
-
-          shadowColor: "#000",
-          shadowOffset: {
-              width: 4,
-              height: 4,
-          },
-          shadowOpacity: 0.32,
-          shadowRadius: 5.46,    
-          elevation: 9,
-
+        height:height,
+        width:width,
+      },
+      cardInfor:{
+        justifyContent:'flex-end',
+        flex:1,
+        paddingBottom:70,
       },
       avatar:{
           height:40,
           width:40,
           borderRadius:20,
           marginRight:10,
+          borderWidth:1,
+          borderColor:'white',
 
+      },
+      Carousel:{
+        position:'absolute',
+        
+        
       },
       fotosContainer:{
           alignSelf:'center',
@@ -207,6 +206,7 @@ const styles = StyleSheet.create(
       },
       fotoContainer:{
         flex:1,
+              
           shadowColor: "#111",
           alignSelf:'center',
           alignItems:'center',
@@ -233,23 +233,24 @@ const styles = StyleSheet.create(
       footer:{
           paddingHorizontal:20,
           paddingVertical:15, 
-          marginBottom:10,
       },
       name:{
           fontSize:16,
           fontWeight:'bold',
-          color:'#333',
+          color:'#fdfdfd',
+      },
+      nick:{
+        color:'#fdfdfd',
       },
       bio:{
           fontSize:14,
-          color:'#999',
+          color:'white',
           padding:10,
           lineHeight:18
       },
       buttonsContainer:{
-        flex:1,
           flexDirection:'row',
-          justifyContent:'space-between',
+          justifyContent:'space-around',
           marginBottom:5
       },
       button:{
@@ -261,27 +262,8 @@ const styles = StyleSheet.create(
           marginHorizontal:30,
       },
       backCard:{
-        borderWidth:0,
-        borderColor:'#DDD',
-        borderTopLeftRadius:2,
-        borderTopRightRadius:40,
-        borderBottomLeftRadius:40,
-        borderBottomRightRadius:40,
-        marginBottom:40,
-        backgroundColor:'#FFFFFF',
-        marginHorizontal:20,
-        top:0,
-        bottom:0,
-        left:0,
-        right:0,
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 4,
-            height: 4,
-        },
-        shadowOpacity: 0.32,
-        shadowRadius: 5.46,    
-        elevation: 9,
+        height:height,
+        width:width,
       },
       backAvatar:{
         height:300,

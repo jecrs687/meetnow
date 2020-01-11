@@ -68,6 +68,13 @@ export class MapEventos extends React.Component {
       this._getLocationAsync();
     }
   }
+  componentDidMount(){
+    this.mapView.animateToRegion({
+      latitude: this.state.eventos[0].location.latitude - height/300000,
+    longitude: this.state.eventos[0].location.longitude,
+    latitudeDelta: 0.01,
+    longitudeDelta: 0.01,
+  }, 200);  }
   _getLocationAsync = async () => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
     while (status !== 'granted') {
@@ -90,10 +97,12 @@ export class MapEventos extends React.Component {
   }
   
   mudarRegiao=(index)=>{
-    console.log(this.mapView)
     this.mapView.animateToRegion({
       latitude: this.state.eventos[index].location.latitude - height/300000,
-    longitude: this.state.eventos[index].location.longitude}, 200);
+    longitude: this.state.eventos[index].location.longitude,
+    latitudeDelta: 0.01,
+    longitudeDelta: 0.01,
+  }, 200);
     // this.setState({location: this.state.eventos[index].location})
   }
   render() {

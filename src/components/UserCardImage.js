@@ -4,6 +4,7 @@ import { Ionicons,FontAwesome,MaterialCommunityIcons} from '@expo/vector-icons';
 import {View,Text, Image, StyleSheet, TouchableOpacity, Dimensions} from 'react-native';
 var width=Dimensions.get('window').width;
 var height=Dimensions.get('window').height;
+import { Video } from 'expo-av';
 
 
 
@@ -27,28 +28,27 @@ export class UserCardImage extends React.Component {
 
   tamanho(){
     proporcao=this.state.theWidth/this.state.theHeigth
-    proporcaoDaTela=(width-60)/(height-300)
+    proporcaoDaTela=(width)/(height)
     
     if(proporcao>proporcaoDaTela) 
     {return({
-      largura:width-60,
-      altura:(width-60)/proporcao
+      largura:width,
+      altura:(width)/proporcao
     })
     }
     else
     {
       return(
-        {altura:height-300,
-      largura:(height-300)*proporcao})
+        {altura:height,
+      largura:(height)*proporcao})
     }
   }
   frontView(){
     return(
  
-    <TouchableOpacity activeOpacity={0.8} onLongPress={()=>{this.setState({isFlipped:!this.state.isFlipped})}}>
+    <TouchableOpacity activeOpacity={1} onLongPress={()=>{this.setState({isFlipped:!this.state.isFlipped})}}>
         <View style={styles.fotoContainer}>
- 
-          <Image style={[styles.foto]} source={{uri:this.props.foto, cache:'force-cache'}} onLoad={(item)=>{this.setState({theHeigth:item.nativeEvent.source.height});this.setState({theWidth:item.nativeEvent.source.width})}} resizeMode='contain' />
+          <Image style={[styles.foto]} source={{uri:this.props.midia.foto, cache:'force-cache'}} onLoad={(item)=>{this.setState({theHeigth:item.nativeEvent.source.height});this.setState({theWidth:item.nativeEvent.source.width})}} resizeMode='contain' />
         </View>
      </TouchableOpacity>
     )
@@ -56,17 +56,17 @@ export class UserCardImage extends React.Component {
   
   backView(){
     return(          
-        <TouchableOpacity style={{ height: height-300,width: width-60,alignContent:'center',alignItems:'center',alignSelf:'center',justifyContent:'center'}} activeOpacity={0.8} onPress={()=>{this.setState({isFlipped:!this.state.isFlipped})}}>
+        <TouchableOpacity style={{ height: height,width: width,alignContent:'center',alignItems:'center',alignSelf:'center',justifyContent:'center'}} activeOpacity={0.8} onPress={()=>{this.setState({isFlipped:!this.state.isFlipped})}}>
             
         <View style={[styles.backContainer,{height:this.tamanho().altura, width:this.tamanho().largura}]}>
-          <Text>parte de trás </Text>
+          <Text>{this.props.midia.text}</Text>
         </View>
      </TouchableOpacity>      )
   }
   
   render() {
     return(
-
+      this.props.midia.foto?
 <FlipCard 
   friction={6}
   perspective={1000}
@@ -76,7 +76,19 @@ export class UserCardImage extends React.Component {
   clickable={false}>
     {this.frontView()}
   {this.backView()}
-  </FlipCard>
+  </FlipCard>:
+<Video
+        source={{ uri: this.props.midia.video }}
+        rate={1.0}
+        ref={ref=>this.ref=ref}
+        volume={1.0}
+        isMuted={false}
+        resizeMode="cover"
+        shouldPlay={true}
+        isLooping={true}
+        posterSource={{uri:'https://firebasestorage.googleapis.com/v0/b/meetnow-c6097.appspot.com/o/assets%2Floading.gif?alt=media&token=45c85754-4293-4116-8508-52a5c64c14bb'}}
+        style={ styles.foto }
+      />  
     )
     
   }
@@ -110,6 +122,7 @@ const styles = StyleSheet.create(
         alignItems:'center',
         alignContent:'center',
         justifyContent:'center',
+        padding:20,
         shadowColor: "#000",
         borderRadius:(height*4/width),
         shadowOffset: {
@@ -124,8 +137,8 @@ const styles = StyleSheet.create(
       foto:{
         alignSelf:'center',
         borderRadius:(height*4/width),
-          height: height-300,
-          width: width-60,
+          height: height,
+          width: width,
         
           
       },
