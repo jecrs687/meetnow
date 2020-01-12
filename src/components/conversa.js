@@ -157,8 +157,7 @@ class Chat extends React.Component {
       </KeyboardAvoidingView>
     );}else{
       return (
-        <SafeAreaView style={{flex: 1}} behavior="padding"  keyboardVerticalOffset={80} enabled>
-              
+        <SafeAreaView style={{flex: 1, }} behavior="padding"  keyboardVerticalOffset={80} enabled>
               {topContent}
              {mainContent} 
         </SafeAreaView>

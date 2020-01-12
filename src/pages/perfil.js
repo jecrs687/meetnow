@@ -1,31 +1,26 @@
-import React,{useState, useEffect} from 'react';
-import {AsyncStorage,View,Text,SafeAreaView, Image, StyleSheet, TouchableOpacity} from 'react-native';
-import api from '../services/api';
+import React from 'react';
+import {View,Text,SafeAreaView, Image, StyleSheet, TouchableOpacity,Dimensions} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
-import  FirebaseSvc from    '../services/FirebaseSvc';
-
 import { ScrollView } from 'react-native-gesture-handler';
-import firebaseSvc from '../services/FirebaseSvc';
-export default function Curtir({navigation}){
-    const [perfil, setPerfil] = useState({});
-    const [avatar, setAvatar] = useState('https://d1bvpoagx8hqbg.cloudfront.net/259/eb0a9acaa2c314784949cc8772ca01b3.jpg');
-    useEffect(()=>{
-        FirebaseSvc.getPerfil(()=>(firebaseSvc.uid),(user)=>{setPerfil(user)})
-    }, [])
-    async function handleReturn(){
-        navigation.navigate('Config')
-    }
+import  FirebaseSvc from    '../services/FirebaseSvc';
+var height=Dimensions.get('window').height;
 
-    function printPerfil({avatar, nome,bio,user, gosto, desgosto}){
+export default class Perfil extends React.Component {
+    constructor(props){
+        super(props);
+        this.state={
+            avatar:'https://d1bvpoagx8hqbg.cloudfront.net/259/eb0a9acaa2c314784949cc8772ca01b3.jpg',
+            user:null,
+        }
+    }
+ 
+    componentDidMount(){
+        FirebaseSvc.getPerfil(()=>(FirebaseSvc.uid),(user)=>{this.setState({user:user})})
+    }
+    printPerfil({avatar, nome,bio,user, gosto, desgosto}){
         return(
             <React.Fragment>
                 <Image source={{uri : avatar, cache:'default' }} style={styles.fundo}    blurRadius={3}/> 
-                <TouchableOpacity onPress={handleReturn} style={styles.buttonReturn}>
-                    <Ionicons name="ios-arrow-back" size={25} color="#AAA" />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={handleReturn} style={styles.iconConfig}>
-                    <Ionicons name="ios-settings" size={30} color="#AAA"/>
-                </TouchableOpacity>
                 <SafeAreaView style={styles.containerPerfil}>               
                     <Image source={{uri : avatar,cache:"default" }} style={styles.avatar}/>
                     <Text style={styles.nome}>{nome}</Text>
@@ -35,7 +30,7 @@ export default function Curtir({navigation}){
                     <View style={styles.footBox}>
                     <Ionicons name="ios-bookmarks" size={25} color="#687" styles={styles.icon} />
                     <Text style={styles.bio}>{bio}</Text></View>
-                    <View style={{flexDirection:'row'}}>
+                    <View style={{flexDirection:'row', alignItems:'stretch'}}>
                     <View style={styles.footBox}>
                     <Ionicons name="ios-heart" size={25} color="#e33" styles={styles.icon} />
                     <Text style={styles.gostos}>{gosto}</Text>
@@ -52,15 +47,22 @@ export default function Curtir({navigation}){
         )
     }
 
+    render(){
     return(
     <View style={styles.container}>
-        {printPerfil({avatar: perfil.avatar!=null? perfil.avatar:avatar, nome:perfil.name, bio:perfil.bio, user:perfil.email, gosto: perfil.gostos, desgosto: perfil.desgostos})}
-    </View>
-    );
+        {this.state.user?this.printPerfil({avatar: this.state.user.avatar!=null? this.state.user.avatar:avatar, nome:this.state.user.name, bio:this.state.user.bio, user:this.state.user.email, gosto: this.state.user.gostos, desgosto: this.state.user.desgostos}):null}
+    </View>)
+    };
 }
 const styles = StyleSheet.create(
     {   
         container:{
+            height:height-140,
+            overflow:'hidden',
+            borderTopLeftRadius:2,
+            borderTopRightRadius:40,
+            borderBottomLeftRadius:40,
+            borderBottomRightRadius:40,
 
         },
         iconConfig:{
@@ -80,7 +82,7 @@ const styles = StyleSheet.create(
             zIndex:1,
             borderColor:'#EEE',
             borderWidth:2,
-            height:200,
+            height:150,
             width:'100%',
         },
         buttonReturn:{
@@ -97,10 +99,8 @@ const styles = StyleSheet.create(
         },
         containerPerfil:{
             zIndex:2,
-            position:'absolute',
-            marginTop:150,
+            marginTop:100,
             marginLeft:10,
-            width:'90%',
             },
         avatar:{     
             backgroundColor:'#eee',
@@ -126,7 +126,7 @@ const styles = StyleSheet.create(
         footBox:{
             flex:1,
             alignItems:'center',
-            marginBottom:12, 
+            marginBottom:5, 
             flexDirection:'row',
         },
         bio:{

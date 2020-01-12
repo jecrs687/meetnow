@@ -193,7 +193,7 @@ class FirebaseSvc {
       user.name = name;
       user.email = email;
       user.avatar = avatar;
-      user.apelido = apelido;
+      user.nick = apelido;
       callback(user);
     })
   }
@@ -226,7 +226,6 @@ class FirebaseSvc {
           name: user.name,
           apelido: user.apelido,
           email: user.email,
-          fotos:{1:"https://firebasestorage.googleapis.com/v0/b/meetnow-c6097.appspot.com/o/users%2Fprofile%2F4T96QMpodLanIX613z4XJoFYaMp2.jpg?alt=media&token=111db581-fa88-46a5-a8b3-a3d99079d2e4"},
           gostos:user.gostos,
           bio:user.bio,
           desgostos: user.desgostos,
@@ -270,7 +269,7 @@ class FirebaseSvc {
         .ref('avatar')
         .child(uuid.v4());
       const task = await ref.put(blob);
-        return ref.getDownloadURL().then((url)=>{return url})
+     return ref.getDownloadURL().then((url)=>{return url})
     } catch (err) {
       console.log('uploadImage try/catch error: ' + err.message); //Cannot load an empty url
     }

@@ -15,8 +15,7 @@ export default function Curtir({navigation}){
     const [uid, setUId] = useState('');
     const [users, setUsers] = useState([]);
     const [match, setMatch] = useState(false);
-    const [refresh, setRefresh] = useState(false);
-    const [index, setIndex] = useState(0);
+    const [indx, setIndex] = useState(0);
 
     async function handleLogout(){
         FirebaseSvc.onLogout()
@@ -47,13 +46,13 @@ export default function Curtir({navigation}){
     }
 
     function getIndex(index){
-        return this.index==index
+        return index==indx
     }
 
     function listUsers(){
        return( 
         users.map((user,index)=>(
-            <UserCard key={index} index={index} now={(index)=>(getIndex(index))} user={user} handleLike={(id)=>{handlelike(id)}} handleDeslike={(id)=>{handledeslike(id)}} isFlipped={true} />
+            <UserCard key={index} index={index} now={(num)=>(getIndex(num))} user={user} handleLike={(id)=>{handlelike(id)}} handleDeslike={(id)=>{handledeslike(id)}} isFlipped={true} />
         )))
     }
 
@@ -98,12 +97,6 @@ export default function Curtir({navigation}){
         <View style={styles.cardsContainer}>
         <Swiper horizontal={false} showsPagination={false} loop={false} onIndexChanged={index=>setIndex(index)}>
         {users.length>0?
-        listUsers()
-        :<Text style={styles.empty}>acabou :(</Text>}
-                {users.length>0?
-        listUsers()
-        :<Text style={styles.empty}>acabou :(</Text>}
-                {users.length>0?
         listUsers()
         :<Text style={styles.empty}>acabou :(</Text>}
         </Swiper>

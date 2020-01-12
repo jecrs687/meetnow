@@ -34,13 +34,14 @@ export class ChangeImageProfile extends React.Component {
       aspect: [4, 3],
       quality: 1
     })
-    console.log(result);
     if(!result.cancelled){
     this.props.changeAvatar('https://firebasestorage.googleapis.com/v0/b/meetnow-c6097.appspot.com/o/assets%2Floading.gif?alt=media&token=45c85754-4293-4116-8508-52a5c64c14bb')
+    this.setState({avatar:'https://firebasestorage.googleapis.com/v0/b/meetnow-c6097.appspot.com/o/assets%2Floading.gif?alt=media&token=45c85754-4293-4116-8508-52a5c64c14bb'})
     let uploadUrl = await firebaseSvc.uploadImage(result.uri);
+    console.log(uploadUrl)
     //let uploadUrl = await firebaseSvc.uploadImageAsync(resizedUri);
-    await this.props.changeAvatar( uploadUrl );
-    await firebaseSvc.updateAvatar(uploadUrl); //might failed
+    this.setState({avatar:uploadUrl})
+    this.props.changeAvatar( uploadUrl );
     };}
     componentDidMount() {
       this.getPermissionAsync();

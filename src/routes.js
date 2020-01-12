@@ -82,7 +82,8 @@ const Principal = createMaterialBottomTabNavigator({
     tabBarIcon:({tintColor})=>(
         <React.Fragment>
     <View>
-      
+    {console.log(this)}
+
     <Ionicons name="ios-chatbubbles" size={25} color={tintColor}/>
       </View>
       </React.Fragment>

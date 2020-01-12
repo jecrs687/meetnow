@@ -23,7 +23,7 @@ class CreateAccount extends React.Component {
 constructor(props){
 super(props);
   this.state = {
-    index:1,
+    index:0,
     name: '',
     apelido:'',
     email: '',
@@ -111,7 +111,7 @@ super(props);
       this.props.navigation.navigate('Login')
       :
       this.state.index==1? 
-      this.props.navigation.navigate('Login')
+      this.setState({index: 0})
             :
       this.state.index==2? 
       this.setState({index: 1})
@@ -136,40 +136,12 @@ super(props);
   onChangeTextBio =  bio => this.setState({bio})
   onChangeTextDesgostos = desgostos => this.setState({desgostos})
   
-  textemail(){
-  return (
-  <React.Fragment>
-    <TextInput 
-    underlineColor='pink'
-    autoCorrect={false}
-    placeholder="nome" 
-    value={this.state.name}
-    onChangeText={this.onChangeTextName}
-    style={styles.input}/>
-    <TextInput 
-    underlineColor='pink'
-    autoCapitalize="none"
-    autoCorrect={false}
-    placeholder="apelido" 
-    value={this.state.apelido}
-    onChangeText={this.onChangeTextApelido}
-    style={styles.input}/>
-  <TextInput 
-    underlineColor='pink'
-    autoCapitalize="none"
-    autoCorrect={false}
-    placeholder="email" 
-    value={this.state.email}
-    onChangeText={this.onChangeTextEmail}
-    style={styles.input}/>
-    </React.Fragment>
-    )}
 textpassword(){
   return (
     <React.Fragment> 
-      <ChangeImageProfile avatar={this.state.avatar} style={{position:'absolute',bottom:225}} changeAvatar={(avatar)=>{this.setState({avatar:avatar})}}/>
-    
-    <View style={{top:50,bottom:0,left:25,right:25,position:'absolute'}}>
+      <View>
+      <ChangeImageProfile avatar={this.state.avatar} style={{position:'absolute',bottom:225, alignSelf:'center'}} changeAvatar={(avatar)=>{this.setState({avatar:avatar})}}/>
+   
     <View style={styles.inputBox}>
     <FontAwesome name='user-o' size={30} style={styles.icon}/>
     <TextInput 
@@ -232,21 +204,7 @@ textBio(){
 
       </React.Fragment>
     )}
-textAvatar(){
-return (
-  <React.Fragment>
 
-   <Image source={{ uri: this.state.avatar }} style={{ width: 200, height: 200,marginTop:10, borderRadius:100}} />
-
-  <Button
-          title="foto de perfil"
-          style={styles.buttonText}
-          onPress={this._pickImage}
-/>
-
-
-    </React.Fragment>
-)};
 textGostos(){
   return (
     <React.Fragment>
@@ -277,18 +235,14 @@ textDesgostos(){
   tela(index){
     switch(index){
       case 0:
-       return this.textemail();
-      case 1:
         return this.textpassword()
-      case 2:
-        return this.textAvatar()
-      case 3:
+      case 1:
         return this.textBio()
-      case 4:
+      case 2:
         return  this.textGostos()
-      case 5:
+      case 3:
         return  this.textDesgostos()
-      case 6:
+      case 4:
        this.onPressCreate()
        break;
         }
@@ -354,7 +308,7 @@ const styles = StyleSheet.create({
     margin:10,
     alignItems:'center',
     borderRadius:10,
-    padding:20,
+    padding:30,
 
   },
   input:{

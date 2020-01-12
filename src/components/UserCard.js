@@ -82,7 +82,7 @@ export class UserCard extends React.Component {
                 elevation: 5,
             }}midia={item} 
             
-            now={(index == this.state.activeSlide )&& this.props.now()}
+            now={(index == this.state.activeSlide )&& this.props.now(this.props.index)}
             />
     </View>
     )
