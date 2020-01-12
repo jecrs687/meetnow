@@ -43,6 +43,9 @@ export class UserCardImage extends React.Component {
       largura:(height)*proporcao})
     }
   }
+  componentDidUpdate(){
+     this.props.midia.video? (this.props.now?this.ref.playAsync():this.ref.pauseAsync()):null
+  }
   frontView(){
     return(
  

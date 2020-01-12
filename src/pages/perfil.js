@@ -12,9 +12,6 @@ export default function Curtir({navigation}){
     useEffect(()=>{
         FirebaseSvc.getPerfil(()=>(firebaseSvc.uid),(user)=>{setPerfil(user)})
     }, [])
-
-
-
     async function handleReturn(){
         navigation.navigate('Config')
     }
@@ -38,6 +35,7 @@ export default function Curtir({navigation}){
                     <View style={styles.footBox}>
                     <Ionicons name="ios-bookmarks" size={25} color="#687" styles={styles.icon} />
                     <Text style={styles.bio}>{bio}</Text></View>
+                    <View style={{flexDirection:'row'}}>
                     <View style={styles.footBox}>
                     <Ionicons name="ios-heart" size={25} color="#e33" styles={styles.icon} />
                     <Text style={styles.gostos}>{gosto}</Text>
@@ -45,6 +43,7 @@ export default function Curtir({navigation}){
                     <View style={styles.footBox}>
                     <Ionicons name="ios-heart-dislike" size={25} color="#1eee" styles={styles.icon} />
                     <Text style={styles.gostos}>{desgosto}</Text>
+                    </View>
                     </View>
                     </ScrollView>
 
@@ -125,6 +124,7 @@ const styles = StyleSheet.create(
         alignSelf:'center',
         },
         footBox:{
+            flex:1,
             alignItems:'center',
             marginBottom:12, 
             flexDirection:'row',

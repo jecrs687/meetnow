@@ -1,14 +1,14 @@
 import React,{ Component } from 'react';
-import { Platform,Text, View,StyleSheet, Dimensions, Animated} from 'react-native';
+import { Platform,Text, View,StyleSheet, Dimensions} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Carousel,{Pagination} from 'react-native-snap-carousel';
 import MapView from 'react-native-maps';
-import { Marker } from 'react-native-maps';
+import { Marker} from 'react-native-maps';
 import Constants from 'expo-constants';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 import {EventoCard} from './EventoCard'
-
+import mapStyle from './assets/mapStyle'
 var width=Dimensions.get('window').width;
 var height=Dimensions.get('window').height;
 
@@ -68,13 +68,6 @@ export class MapEventos extends React.Component {
       this._getLocationAsync();
     }
   }
-  componentDidMount(){
-    this.mapView.animateToRegion({
-      latitude: this.state.eventos[0].location.latitude - height/300000,
-    longitude: this.state.eventos[0].location.longitude,
-    latitudeDelta: 0.01,
-    longitudeDelta: 0.01,
-  }, 200);  }
   _getLocationAsync = async () => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
     while (status !== 'granted') {
@@ -102,7 +95,7 @@ export class MapEventos extends React.Component {
     longitude: this.state.eventos[index].location.longitude,
     latitudeDelta: 0.01,
     longitudeDelta: 0.01,
-  }, 200);
+  }, 1000);
     // this.setState({location: this.state.eventos[index].location})
   }
   render() {
@@ -111,6 +104,15 @@ export class MapEventos extends React.Component {
        {   this.state.location && 
        <MapView style={styles.mapStyle}
        ref = {(ref)=>this.mapView=ref}
+       loadingBackgroundColor='black'
+       customMapStyle={mapStyle}
+       onMapReady={()=>{
+         this.mapView.animateToRegion({
+        latitude: this.state.eventos[0].location.latitude - height/300000,
+      longitude: this.state.eventos[0].location.longitude,
+      latitudeDelta: 0.01,
+      longitudeDelta: 0.01,
+    }, 5000);}}
         >
           <Marker coordinate={this.state.locationUser} title='você está aqui!'>
             <View style={{backgroundColor:'#11ffff', height:30,width:30, borderRadius:15, borderWidth:2,borderStyle:'solid', borderColor:'white'}}></View>
@@ -150,23 +152,19 @@ const styles = StyleSheet.create(
       justifyContent: 'center',
     },
     mapStyle: {
+      flex:1,
+      backgroundColor:'black',
+      zIndex:1,
+      position:'absolute',
       width: Dimensions.get('window').width,
       height: Dimensions.get('window').height,
     },
     boxEventos:{
-      shadowColor: "#000",
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 3.84,
-      
-      elevation: 5,
+      zIndex:2,
       position:'absolute', 
-      bottom:60, 
       height:height/2.2 - 50, 
-      width:'100%'
+      width:width,
+      top:height-(height/2.2 - 50)-60
     },
 
     });

@@ -52,7 +52,6 @@ const Principal = createMaterialBottomTabNavigator({
     )} },    
   Eventos: { screen: MapEventos, navigationOptions:{
     tabBarLabel:'Eventos',
-    tabBarColor:'black',
     tabBarVisible:1,
     tabBarIcon:({tintColor})=>(
         <React.Fragment>

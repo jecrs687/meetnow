@@ -1,5 +1,5 @@
 import React,{useState, useEffect} from 'react';
-import {PanResponder,AsyncStorage,View,Text,SafeAreaView, Image, StyleSheet, TouchableOpacity, Dimensions,StatusBar, ScrollView} from 'react-native';
+import {PanResponder,Platform,View,Text,SafeAreaView, Image, StyleSheet, TouchableOpacity, Dimensions,StatusBar, ScrollView} from 'react-native';
 import logo from '../assets/logo.png';
 import { Ionicons,FontAwesome} from '@expo/vector-icons';
 import {UserCard} from '../components/UserCard';
@@ -16,7 +16,7 @@ export default function Curtir({navigation}){
     const [users, setUsers] = useState([]);
     const [match, setMatch] = useState(false);
     const [refresh, setRefresh] = useState(false);
-    const [indx, setIndex] = useState(0);
+    const [index, setIndex] = useState(0);
 
     async function handleLogout(){
         FirebaseSvc.onLogout()
@@ -46,12 +46,14 @@ export default function Curtir({navigation}){
         )
     }
 
-
+    function getIndex(index){
+        return this.index==index
+    }
 
     function listUsers(){
        return( 
         users.map((user,index)=>(
-            <UserCard key={index} now={index==indx} user={user} handleLike={(id)=>{handlelike(id)}} handleDeslike={(id)=>{handledeslike(id)}} isFlipped={true} />
+            <UserCard key={index} index={index} now={(index)=>(getIndex(index))} user={user} handleLike={(id)=>{handlelike(id)}} handleDeslike={(id)=>{handledeslike(id)}} isFlipped={true} />
         )))
     }
 
@@ -69,6 +71,20 @@ export default function Curtir({navigation}){
         // setUsers(users.filter((currentValue)=>{return currentValue._id!=_id}))
 
     }
+//     userAndroid=()=>(
+//     <ScrollView horizontal={false}>
+//     {users.length>0?
+//     listUsers()
+//     :<Text style={styles.empty}>acabou :(</Text>}
+//            {users.length>0?
+//     listUsers()
+//     :<Text style={styles.empty}>acabou :(</Text>}
+//            {users.length>0?
+//     listUsers()
+//     :<Text style={styles.empty}>acabou :(</Text>}
+//     </ScrollView>)
+//     userIos=()=>(
+// )
     
     return(
     <SafeAreaView style={styles.container}>
@@ -80,17 +96,18 @@ export default function Curtir({navigation}){
             <Image source={logo} style={styles.logo} resizeMode='contain' />
         </View>
         <View style={styles.cardsContainer}>
-        <Swiper horizontal={false} showsVerticalScrollIndicator showsPagination={false} loop={false} onIndexChanged={index=>setIndex(index)}>
+        <Swiper horizontal={false} showsPagination={false} loop={false} onIndexChanged={index=>setIndex(index)}>
         {users.length>0?
         listUsers()
         :<Text style={styles.empty}>acabou :(</Text>}
-               {users.length>0?
+                {users.length>0?
         listUsers()
         :<Text style={styles.empty}>acabou :(</Text>}
-               {users.length>0?
+                {users.length>0?
         listUsers()
         :<Text style={styles.empty}>acabou :(</Text>}
         </Swiper>
+        
             {deuMatch()}
             </View>
     </SafeAreaView>

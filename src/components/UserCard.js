@@ -68,10 +68,9 @@ export class UserCard extends React.Component {
       );
   }
 
-
    listFotos = ({index, item})=>{
     return(  
-      <View style={{overflow:'visible', top:0,bottom:0,left:0,right:0}}>                         
+      <View style={{overflow:'visible', top:0,bottom:0,left:0,right:0}}> 
           <UserCardImage style={{
                 shadowColor: "#000",
                 shadowOffset: {
@@ -81,7 +80,11 @@ export class UserCard extends React.Component {
                 shadowOpacity: 0.25,
                 shadowRadius: 3.84,
                 elevation: 5,
-            }}midia={item} now={this.props.now &&index == this.state.activeSlide}/></View>
+            }}midia={item} 
+            
+            now={(index == this.state.activeSlide )&& this.props.now()}
+            />
+    </View>
     )
 }
   frontView(){
