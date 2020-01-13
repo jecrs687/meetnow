@@ -4,6 +4,7 @@ import { Ionicons,FontAwesome,MaterialCommunityIcons} from '@expo/vector-icons';
 import {View,Text, Image, StyleSheet, TouchableOpacity, Dimensions} from 'react-native';
 var width=Dimensions.get('window').width;
 var height=Dimensions.get('window').height;
+import loading from '../assets/loading.gif'
 import { Video } from 'expo-av';
 
 
@@ -89,7 +90,7 @@ export class UserCardImage extends React.Component {
         resizeMode="cover"
         shouldPlay={true}
         isLooping={true}
-        posterSource={{uri:'https://firebasestorage.googleapis.com/v0/b/meetnow-c6097.appspot.com/o/assets%2Floading.gif?alt=media&token=45c85754-4293-4116-8508-52a5c64c14bb'}}
+        posterSource={loading}
         style={ styles.foto }
       />  
     )
@@ -139,7 +140,7 @@ const styles = StyleSheet.create(
       },
       foto:{
         alignSelf:'center',
-        borderRadius:(height*4/width),
+        borderRadius:(height*2/width),
           height: height,
           width: width,
         

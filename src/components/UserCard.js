@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import FlipCard from 'react-native-flip-card'
 import { Ionicons,FontAwesome,MaterialCommunityIcons} from '@expo/vector-icons';
-import {Button,PanResponder,AsyncStorage,View,Text,SafeAreaView, Image, StyleSheet, TouchableOpacity, Dimensions,StatusBar, ScrollView} from 'react-native';
+import {Button,PanResponder,AsyncStorage,View,Text,SafeAreaView, Image, StyleSheet, TouchableOpacity, Dimensions,StatusBar, ScrollView, RefreshControl} from 'react-native';
 var width=Dimensions.get('window').width;
 import {Perfil} from './perfilCard'
 import Carousel,{Pagination} from 'react-native-snap-carousel';
@@ -17,14 +17,17 @@ export class UserCard extends React.Component {
   
   constructor(props) {
     super(props);
+
     this.state = {
       user:this.props.user,
+      index:this.props.index,
       isFlipped: false,
       activeSlide:0,
       handlelike:false,
       handledeslike:false,
     };
   }
+  
 
   fotos(){   var lista=[]; 
     Object.entries(this.props.user.fotos).forEach(
@@ -33,7 +36,10 @@ export class UserCard extends React.Component {
         }
     );
     return(lista)}
-
+  componentWillUpdate(){
+    this.state.handlelike?this.props.handleLike(this.state.user._id):this.props.handleDeslike(this.props.user._id);
+    this.state.handledeslike?this.props.handleDeslike(this.props.user._id):null;
+  }
     get pagination () {
       const { entries, activeSlide } = this.state;
       return (
@@ -70,19 +76,26 @@ export class UserCard extends React.Component {
 
    listFotos = ({index, item})=>{
     return(  
-      <View style={{overflow:'visible', top:0,bottom:0,left:0,right:0}}> 
+      <View style={{
+        overflow:'visible', 
+        top:0,
+        bottom:0,
+        left:0,
+        right:0,
+      }}> 
           <UserCardImage style={{
                 shadowColor: "#000",
                 shadowOffset: {
                   width: 0,
                   height: 2,
                 },
+                
                 shadowOpacity: 0.25,
                 shadowRadius: 3.84,
                 elevation: 5,
             }}midia={item} 
             
-            now={(index == this.state.activeSlide )&& this.props.now(this.props.index)}
+            now={(index == this.state.activeSlide )&& this.props.now(this.state.index)}
             />
     </View>
     )
@@ -96,7 +109,6 @@ export class UserCard extends React.Component {
                       layout={'stack'}
                       ref={(c) => { this._carousel = c; }}
                       data={this.fotos()}
-                    
                       renderItem={this.listFotos}
                       sliderWidth={width}
                       onSnapToItem={(index) => this.setState({ activeSlide: index }) }
@@ -115,25 +127,25 @@ export class UserCard extends React.Component {
             <Text style={styles.nick}>{'@'+this.state.user.nick}</Text>
           </View>
         </View>
-
           <Text style={styles.bio} numberOfLines={3}>{this.state.user.bio}</Text>
           
             <View style={styles.buttonsContainer}>
-                  <TouchableOpacity style={[styles.button,{opacity:this.state.handledeslike? 0.4:1}]} onPress={()=>{this.setState({handledeslike:!this.state.handledeslike,handlelike:false});this.props.handleDeslike(this.props.user._id); }}>
-                      <FontAwesome name='close' size={30} color='#4df' />
+                  <TouchableOpacity style={[styles.button,{opacity:this.state.opacityDeslike}]} onPress={()=>{this.setState({handledeslike:!this.state.handledeslike,handlelike:false, opacityDeslike:!this.state.handledeslike? 0.4:1, opacityLike:1});}}> 
+                  <FontAwesome name='close'  size={30} color='#4df' />
                   </TouchableOpacity>
                   {/* <TouchableOpacity style={styles.button} onPress={()=>{this.setState({isFlipped:!this.state.isFlipped}); this.props.handle();}}>
                       <MaterialCommunityIcons name='rotate-3d' size={30} color='black'/>
                   </TouchableOpacity> */}
-                  <TouchableOpacity style={[styles.button, {opacity:this.state.handlelike?0.4:1}]}  onPress={()=>{this.setState({handledeslike:false,handlelike:!this.state.handlelike});this.props.handleLike(this.state.user._id);}}>
+                  <TouchableOpacity style={[styles.button, {opacity:this.state.opacityLike}]}  onPress={()=>{this.setState({handledeslike:false,handlelike:!this.state.handlelike, opacityDeslike:1, opacityLike:!this.state.handlelike? 0.4:1});}}>
                       <Ionicons name='ios-heart' size={30} color='#d11'/>
                   </TouchableOpacity>
 
             </View>
           </View>
     )
+ 
   }
-  
+ 
   backView(){
     return(          
       <View>

@@ -9,7 +9,6 @@ console.ignoredYellowBox = ['Setting a timer'];
 console.ignoredYellowBox = ['Setting a timer'];
 
 export default function App() {
-
   return (
     <Routes/>
   );

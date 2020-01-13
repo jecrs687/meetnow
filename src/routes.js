@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, Image} from 'react-native';
-import{createAppContainer, createSwitchNavigator, withNavigation, NavigationEvents, NavigationProvider} from 'react-navigation'
+import{createAppContainer, createSwitchNavigator, withNavigation, NavigationEvents, NavigationProvider, TabRouter} from 'react-navigation'
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
 import Config from './pages/config';
 import { Ionicons, MaterialIcons,MaterialCommunityIcons} from '@expo/vector-icons';
@@ -37,7 +37,8 @@ const transitionConfig = () => {
     },
   }
 }
-const conversar = createAnimatedSwitchNavigator({listConversas:{screen:listConversas},Conversa:{screen:Conversa}}, {initialRouteName:'listConversas',transitionConfig})
+
+const conversar = createAnimatedSwitchNavigator({listConversas:{screen:listConversas},Conversa:{screen:Conversa}}, {initialRouteName:'listConversas',transitionConfig, initialRouteParams:{}})
 const Perfil = createSwitchNavigator({perfilUser,Config})
 const Principal = createMaterialBottomTabNavigator({
   Curtir: { screen: Curtir, navigationOptions:{
@@ -52,7 +53,6 @@ const Principal = createMaterialBottomTabNavigator({
     )} },    
   Eventos: { screen: MapEventos, navigationOptions:{
     tabBarLabel:'Eventos',
-    tabBarVisible:1,
     tabBarIcon:({tintColor})=>(
         <React.Fragment>
     <View>
@@ -67,23 +67,23 @@ const Principal = createMaterialBottomTabNavigator({
     tabBarIcon:({tintColor,focused})=>(
     (
       <React.Fragment>      
-        <View  style={{ backgroundColor: 'transparent'}}
+        <View  style={{ backgroundColor: 'transparent', position:'absolute',overflow:'visible'}}
       pointerEvents={'box-none'}>
     <MaterialCommunityIcons name="calendar-heart" size={25} color={tintColor}/>
     </View>
     </React.Fragment>
+
 
       )
     )} },
   Conversas: { screen: conversar, navigationOptions:{
     tabBarLabel:'Conversas',
     tabBarColor:'white',
+    
     tabBarVisible:()=>{console.log(NavigationProvider);return 'hidden';},
     tabBarIcon:({tintColor})=>(
         <React.Fragment>
     <View>
-    {console.log(this)}
-
     <Ionicons name="ios-chatbubbles" size={25} color={tintColor}/>
       </View>
       </React.Fragment>

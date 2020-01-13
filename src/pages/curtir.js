@@ -15,7 +15,7 @@ export default function Curtir({navigation}){
     const [uid, setUId] = useState('');
     const [users, setUsers] = useState([]);
     const [match, setMatch] = useState(false);
-    const [indx, setIndex] = useState(0);
+    const [index, setIndex] = useState(0);
 
     async function handleLogout(){
         FirebaseSvc.onLogout()
@@ -45,8 +45,8 @@ export default function Curtir({navigation}){
         )
     }
 
-    function getIndex(index){
-        return index==indx
+    function getIndex(num){
+        return index==num
     }
 
     function listUsers(){
@@ -95,7 +95,10 @@ export default function Curtir({navigation}){
             <Image source={logo} style={styles.logo} resizeMode='contain' />
         </View>
         <View style={styles.cardsContainer}>
-        <Swiper horizontal={false} showsPagination={false} loop={false} onIndexChanged={index=>setIndex(index)}>
+        <Swiper horizontal={false} 
+        showsPagination={false} 
+        loop={false} 
+        onIndexChanged={index=>{setIndex(index); console.log(index)}}>
         {users.length>0?
         listUsers()
         :<Text style={styles.empty}>acabou :(</Text>}
