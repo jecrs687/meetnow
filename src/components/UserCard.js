@@ -94,7 +94,6 @@ export class UserCard extends React.Component {
                 shadowRadius: 3.84,
                 elevation: 5,
             }}midia={item} 
-            
             now={(index == this.state.activeSlide )&& this.props.now(this.state.index)}
             />
     </View>

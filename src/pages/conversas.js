@@ -13,10 +13,7 @@ export default function Conversas({navigation}){
     firebaseSvc.getConversas((retorno)=>{setList(retorno);})}     
     ,[])
      async function abrirConversa({id, name, avatar, nick,conversationId}){
-        var setVisible=()=>{};
-        console.log(navigation.state.params.visible())
-        navigation.getParam(setVisible)
-        setVisible('hidden');
+
         
       navigation.navigate('Conversa',{id: id, name:name, avatar:avatar, nick:nick, conversationId:conversationId});
     }

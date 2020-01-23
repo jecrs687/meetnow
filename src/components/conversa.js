@@ -150,14 +150,14 @@ class Chat extends React.Component {
     );
       if(Platform.OS=='android'){
       return (
-      <KeyboardAvoidingView style={{flex: 1}} behavior="padding"  keyboardVerticalOffset={80} enabled>
+      <KeyboardAvoidingView style={{flex: 1,marginBottom:50}} behavior="padding"  enabled>
             
             {topContent}
            {mainContent} 
       </KeyboardAvoidingView>
     );}else{
       return (
-        <SafeAreaView style={{flex: 1, }} behavior="padding"  keyboardVerticalOffset={80} enabled>
+        <SafeAreaView style={{flex: 1,marginBottom:50 }} behavior="padding"  enabled>
               {topContent}
              {mainContent} 
         </SafeAreaView>

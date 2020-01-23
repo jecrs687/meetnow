@@ -12,7 +12,6 @@ var height=Dimensions.get('window').height;
 
 
 export default function Curtir({navigation}){
-    const [uid, setUId] = useState('');
     const [users, setUsers] = useState([]);
     const [match, setMatch] = useState(false);
     const [index, setIndex] = useState(0);
@@ -46,7 +45,7 @@ export default function Curtir({navigation}){
     }
 
     function getIndex(num){
-        return index==num
+        return num==index
     }
 
     function listUsers(){
@@ -95,10 +94,13 @@ export default function Curtir({navigation}){
             <Image source={logo} style={styles.logo} resizeMode='contain' />
         </View>
         <View style={styles.cardsContainer}>
-        <Swiper horizontal={false} 
-        showsPagination={false} 
+        <Swiper 
+        horizontal={false} 
+        showsPagination={true} 
         loop={false} 
-        onIndexChanged={index=>{setIndex(index); console.log(index)}}>
+        index={index}
+        onIndexChanged={(num)=>{setIndex(num); console.log(num)}}
+        >
         {users.length>0?
         listUsers()
         :<Text style={styles.empty}>acabou :(</Text>}

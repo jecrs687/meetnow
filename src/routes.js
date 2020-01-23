@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, Image} from 'react-native';
-import{createAppContainer, createSwitchNavigator, withNavigation, NavigationEvents, NavigationProvider, TabRouter} from 'react-navigation'
+import{createAppContainer, createSwitchNavigator, withNavigation, NavigationEvents, NavigationProvider, TabRouter, NavigationContext} from 'react-navigation'
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
 import Config from './pages/config';
 import { Ionicons, MaterialIcons,MaterialCommunityIcons} from '@expo/vector-icons';
@@ -13,7 +13,8 @@ import Conversa from './components/conversa';
 import {MapEventos} from './components/MapEventos';
 import Login from './index'
 import CriarConta from './pages/criarConta'
-
+import { BottomNavigation } from 'react-native-paper';
+var visible;
 const transitionConfig = () => {
   return {
     transitionSpec: {
@@ -79,8 +80,6 @@ const Principal = createMaterialBottomTabNavigator({
   Conversas: { screen: conversar, navigationOptions:{
     tabBarLabel:'Conversas',
     tabBarColor:'white',
-    
-    tabBarVisible:()=>{console.log(NavigationProvider);return 'hidden';},
     tabBarIcon:({tintColor})=>(
         <React.Fragment>
     <View>
@@ -91,7 +90,6 @@ const Principal = createMaterialBottomTabNavigator({
   Perfil: { screen: Perfil, navigationOptions:{
       tabBarLabel:'Perfil',
       tabBarColor:'white',
-      
       tabBarIcon:({tintColor})=>(
         <React.Fragment>
     <View>
