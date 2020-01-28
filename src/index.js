@@ -1,5 +1,5 @@
 import React,{useEffect, useState} from 'react'
-import {AsyncStorage,KeyboardAvoidingView,StyleSheet, Text,View, Image,TouchableOpacity } from 'react-native';
+import {Animated,Easing,KeyboardAvoidingView,StyleSheet, Text,View, Image,TouchableOpacity } from 'react-native';
 import logo from './assets/logo.png';
 import { TextInput } from 'react-native-paper';
 import {FontAwesome} from '@expo/vector-icons';
@@ -12,12 +12,23 @@ export default function Login({navigation}) {
     const [logar, setLogar] = useState('');
     const [user, setUser] = useState('emanuel@gmail.com');
     const [senha, setSenha] = useState('123123');
-    const [erro, setErro] = useState(null );
-
+    const [erro, setErro] = useState(null);
+    const [opacity] = useState(new Animated.Value(50));
+    
     useEffect(()=>{
  
       firebaseSvc.uid?
       navigation.navigate('Principal'):null
+      console.log('carregado')
+      Animated.timing(
+        opacity,
+        {      
+          toValue: 0,
+          duration: 1000,
+          easing: Easing.in,
+        }
+      ).start()
+
 
     }, [])
   async function handleLogin(){
@@ -31,6 +42,7 @@ export default function Login({navigation}) {
 
   }
   async function handleCriar(){
+
     navigation.navigate('CriarConta');
 }
     return (
@@ -39,14 +51,14 @@ export default function Login({navigation}) {
       enabled={true}
       style={styles.container}
       >
-                <LinearGradient
+        <LinearGradient
         // colors={['#4c669f', '#3b5998', '#192f6a']}
         colors={['#ffccf0','#ffcce0']}
         style={{ padding: 15, alignItems:'center',justifyContent:'center', width:'100%',height:'60%' ,minHeight:200,borderRadius: 5 ,position:"absolute", top:0}}
         >
               <Image source={logo} resizeMode='contain' style={styles.logo}/>
       </LinearGradient>
-    <View style={styles.containerBox}>
+    <Animated.View style={[styles.containerBox,{bottom:opacity}]}>
     {erro? <Text style={{color:'#ffcce0',fontWeight:'bold', alignSelf:'center' }}>{erro}</Text>:null}
     <View style={styles.inputBox}>
     <FontAwesome name='user-o' size={30} style={styles.icon}/>
@@ -83,7 +95,7 @@ export default function Login({navigation}) {
       </Text>
       </TouchableOpacity>
     </View>
-    </View>
+    </Animated.View>
   </KeyboardAvoidingView>
   );
 }
@@ -98,7 +110,6 @@ const styles = StyleSheet.create({
   containerBox:{
     backgroundColor:'white',
     height:'50%',
-    minHeight:250,
     width:'90%',
     margin:10,
     alignItems:'center',

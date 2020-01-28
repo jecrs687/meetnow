@@ -6,6 +6,8 @@ import {UserCard} from '../components/UserCard';
 import  FirebaseSvc from    '../services/FirebaseSvc';
 import firebaseSvc from '../services/FirebaseSvc';
 import Swiper from 'react-native-swiper'
+import LottieView from 'lottie-react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 
 var width=Dimensions.get('window').width;
 var height=Dimensions.get('window').height;
@@ -86,6 +88,11 @@ export default function Curtir({navigation}){
     
     return(
     <SafeAreaView style={styles.container}>
+         <LinearGradient
+        // colors={['#4c669f', '#3b5998', '#192f6a']}
+        colors={['#222','#333']}
+        style={{flex:1}}
+        >
       <StatusBar backgroundColor="blue" barStyle="light-content" />
         <View style={styles.topContainer}>
             <TouchableOpacity onPress={handleLogout} style={styles.icon}>
@@ -96,18 +103,29 @@ export default function Curtir({navigation}){
         <View style={styles.cardsContainer}>
         <Swiper 
         horizontal={false} 
-        showsPagination={true} 
         loop={false} 
         index={index}
         onIndexChanged={(num)=>{setIndex(num); console.log(num)}}
         >
         {users.length>0?
         listUsers()
-        :<Text style={styles.empty}>acabou :(</Text>}
+
+        :   
+        <View style={{elevation:3,overflow:'visible', flex:1,alignItems:'center',justifyContent:'center'}}>     
+        <LottieView 
+        source={require('../assets/loading.json')} 
+        style={{height:'85%', width:'85%', alignSelf:'center'}} 
+        autoPlay 
+        autoSize
+        resizeMode='contain'
+        loop/>
+        </View>
+    }
         </Swiper>
         
             {deuMatch()}
             </View>
+            </LinearGradient>
     </SafeAreaView>
     );
 }
@@ -156,13 +174,14 @@ const styles = StyleSheet.create(
             position:'absolute',
             height:'100%',
             width:'100%',
-            backgroundColor:'#111',
+            backgroundColor:'#222',
             alignItems:'center',
             justifyContent:'space-between'
         },
 
         empty:{
             alignSelf: 'center',
+            justifyContent:'center',
             color:'#999',
             fontSize:24,
             fontWeight:'bold',
@@ -170,7 +189,6 @@ const styles = StyleSheet.create(
         cardsContainer:{
             flex:1,
             alignSelf:'stretch',
-            justifyContent:'center',
         },
         card:{
             

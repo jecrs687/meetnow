@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import FlipCard from 'react-native-flip-card'
 import { Ionicons,FontAwesome,MaterialCommunityIcons} from '@expo/vector-icons';
-import {Button,PanResponder,AsyncStorage,View,Text,SafeAreaView, Image, StyleSheet, TouchableOpacity, Dimensions,StatusBar, ScrollView, RefreshControl} from 'react-native';
+import {Animated,View,Text,Easing, Image, StyleSheet, TouchableOpacity, Dimensions,StatusBar, ScrollView, RefreshControl} from 'react-native';
 var width=Dimensions.get('window').width;
 import {Perfil} from './perfilCard'
 import Carousel,{Pagination} from 'react-native-snap-carousel';
 import {UserCardImage} from './UserCardImage'
+import LottieView from 'lottie-react-native';
 
 
 var height=Dimensions.get('window').height;
@@ -23,8 +24,8 @@ export class UserCard extends React.Component {
       index:this.props.index,
       isFlipped: false,
       activeSlide:0,
-      handlelike:false,
-      handledeslike:false,
+      handlelike:new Animated.Value(0.25),
+      handledeslike:new Animated.Value(0),
     };
   }
   
@@ -36,10 +37,6 @@ export class UserCard extends React.Component {
         }
     );
     return(lista)}
-  componentWillUpdate(){
-    this.state.handlelike?this.props.handleLike(this.state.user._id):this.props.handleDeslike(this.props.user._id);
-    this.state.handledeslike?this.props.handleDeslike(this.props.user._id):null;
-  }
     get pagination () {
       const { entries, activeSlide } = this.state;
       return (
@@ -49,7 +46,7 @@ export class UserCard extends React.Component {
             containerStyle={{
               maxWidth:'40%',
               position:"absolute",
-              bottom:55,
+              top:0,
               alignSelf:'center',              
             }}
             dotStyle={{
@@ -57,7 +54,7 @@ export class UserCard extends React.Component {
                 height: 10,
                 borderRadius: 5,
                 borderColor:'#687',
-                borderWidth:1,
+                borderWidth:0.01,
                 marginHorizontal: 1,
                 backgroundColor: 'white'
             }}
@@ -73,7 +70,36 @@ export class UserCard extends React.Component {
           />
       );
   }
-
+  handleDeslike=()=>{
+    Animated.timing(
+      this.state.handledeslike,
+      {      
+        toValue: 1,
+        duration: 5000,
+        easing: Easing.linear,}
+    ).start()
+  }
+  
+  handleLike=()=>{
+    this.state.handlelike._value >0.25?
+    this.props.handleDeslike(this.state.user._id):this.props.handleLike(this.state.user._id)
+    
+      this.state.handlelike._value >0.25?
+      Animated.timing(
+        this.state.handlelike,
+        {      
+          toValue: 0.25,
+          duration: 500,
+          easing: Easing.linear,}
+      ).start():
+      Animated.timing(
+        this.state.handlelike,
+        {      
+          toValue: 1,
+          duration: 3000,
+          easing: Easing.linear,}
+      ).start()
+    }
    listFotos = ({index, item})=>{
     return(  
       <View style={{
@@ -83,6 +109,7 @@ export class UserCard extends React.Component {
         left:0,
         right:0,
       }}> 
+      
           <UserCardImage style={{
                 shadowColor: "#000",
                 shadowOffset: {
@@ -117,8 +144,9 @@ export class UserCard extends React.Component {
 
                     />
                     { this.pagination }
-
               </View>
+        <View style={{flexDirection:'row', marginLeft:10}}>
+        <View style={{flex:3}}>
         <View style={[styles.footer,{flexDirection:'row'}]} pointerEvents='none'>
           <Image style={styles.avatar} source={{uri:this.state.user.avatar}}/>
           <View>
@@ -127,19 +155,23 @@ export class UserCard extends React.Component {
           </View>
         </View>
           <Text style={styles.bio} numberOfLines={3}>{this.state.user.bio}</Text>
-          
-            <View style={styles.buttonsContainer}>
-                  <TouchableOpacity style={[styles.button,{opacity:this.state.opacityDeslike}]} onPress={()=>{this.setState({handledeslike:!this.state.handledeslike,handlelike:false, opacityDeslike:!this.state.handledeslike? 0.4:1, opacityLike:1});}}> 
+          </View>
+            <View style={[styles.buttonsContainer,{flex:1}]}>
+                  {/* <TouchableOpacity style={[styles.button,{opacity:this.state.opacityDeslike}]} onPress={()=>{this.handleDeslike()}}> 
                   <FontAwesome name='close'  size={30} color='#4df' />
-                  </TouchableOpacity>
+                  </TouchableOpacity> */}
                   {/* <TouchableOpacity style={styles.button} onPress={()=>{this.setState({isFlipped:!this.state.isFlipped}); this.props.handle();}}>
                       <MaterialCommunityIcons name='rotate-3d' size={30} color='black'/>
                   </TouchableOpacity> */}
-                  <TouchableOpacity style={[styles.button, {opacity:this.state.opacityLike}]}  onPress={()=>{this.setState({handledeslike:false,handlelike:!this.state.handlelike, opacityDeslike:1, opacityLike:!this.state.handlelike? 0.4:1});}}>
-                      <Ionicons name='ios-heart' size={30} color='#d11'/>
+                  <TouchableOpacity style={[styles.button, {opacity:this.state.opacityLike}]}  onPress={()=>{this.handleLike() }}>
+                    <View style={{alignItems:'center',justifyContent:'center', elevation:10}}>
+                    <LottieView source={require('./assets/heart.json')} progress={this.state.handlelike} resizeMode='cover' style={{height:270,width:270}}/>
+                    </View>
+                      {/* <Ionicons name='ios-heart' size={30} color='#d11'/> */}
                   </TouchableOpacity>
 
             </View>
+          </View>
           </View>
     )
  
@@ -260,17 +292,18 @@ const styles = StyleSheet.create(
           fontSize:14,
           color:'white',
           padding:10,
-          lineHeight:18
+          lineHeight:18,
+          textAlign:'justify'
       },
       buttonsContainer:{
           flexDirection:'row',
+          maxHeight:100,
           justifyContent:'space-around',
           marginBottom:5
       },
       button:{
-          maxHeight:50,
-          maxWidth:50,
-          borderRadius:200,
+          flex:1,  
+          minHeight:50,
           justifyContent:'center',
           alignItems:'center',
           marginHorizontal:30,

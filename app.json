@@ -3,7 +3,7 @@
     "name": "meetnow",
     "slug": "conhecaAgora",
     "privacy": "public",
-    "sdkVersion": "35.0.0",
+    "sdkVersion": "36.0.0",
     "android": {
       "package": "com.meetnow",
       "config": {
@@ -35,7 +35,6 @@
       "supportsTablet": true,
       "config": {
         "googleMapsApiKey": "AIzaSyBUqn8noUuu4nGeNa4ME8LwI0u4a74_YbE"
-        
       }
     }
   }

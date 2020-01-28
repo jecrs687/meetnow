@@ -25,7 +25,7 @@ export class UserCardImage extends React.Component {
 
     };
   }
-
+z
 
   tamanho(){
     proporcao=this.state.theWidth/this.state.theHeigth
