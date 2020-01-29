@@ -90,7 +90,7 @@ export default function Curtir({navigation}){
     <SafeAreaView style={styles.container}>
          <LinearGradient
         // colors={['#4c669f', '#3b5998', '#192f6a']}
-        colors={['#222','#333']}
+        colors={['#303030','#3f3f3f']}
         style={{flex:1}}
         >
       <StatusBar backgroundColor="blue" barStyle="light-content" />

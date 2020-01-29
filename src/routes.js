@@ -103,11 +103,13 @@ const Principal = createMaterialBottomTabNavigator({
    
    backBehavior:'history',
   initialRouteName: 'Curtir',
-  activeColor: '#ffcce0',
-  inactiveColor:'#687687',
+  activeColor: '#ff70a8',
+  inactiveColor:'#808080',
   barStyle:{
     zIndex:0,
     height:50,
+    borderTopWidth:0.3,
+    borderTopColor:'#ddd',
     position:'absolute',
     backgroundColor:'transparent',
     overflow:'visible'
