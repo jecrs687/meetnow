@@ -51,12 +51,14 @@ export default function Login({navigation}) {
       enabled={true}
       style={styles.container}
       >
+        
         <LinearGradient
         // colors={['#4c669f', '#3b5998', '#192f6a']}
         colors={['#ffccf0','#ffcce0']}
         style={{ padding: 15, alignItems:'center',justifyContent:'center', width:'100%',height:'60%' ,minHeight:200,borderRadius: 5 ,position:"absolute", top:0}}
         >
               <Image source={logo} resizeMode='contain' style={styles.logo}/>
+              
       </LinearGradient>
     <Animated.View style={[styles.containerBox,{bottom:opacity}]}>
     {erro? <Text style={{color:'#ffcce0',fontWeight:'bold', alignSelf:'center' }}>{erro}</Text>:null}

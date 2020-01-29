@@ -103,6 +103,7 @@ export default function Curtir({navigation}){
         <View style={styles.cardsContainer}>
         <Swiper 
         horizontal={false} 
+        showsPagination={false}
         loop={false} 
         index={index}
         onIndexChanged={(num)=>{setIndex(num); console.log(num)}}

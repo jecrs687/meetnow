@@ -52,21 +52,19 @@ export class UserCard extends React.Component {
             dotStyle={{
                 width: 10,
                 height: 10,
-                borderRadius: 5,
                 borderColor:'#687',
                 borderWidth:0.01,
-                marginHorizontal: 1,
-                backgroundColor: 'white'
+                backgroundColor: '#ccc'
             }}
             inactiveDotStyle={{
-              borderRadius: 5,
               borderColor:'#888',
               borderWidth:1,
-              marginHorizontal: 1,
               backgroundColor: '#333'
                     }}
             inactiveDotOpacity={0.4}
             inactiveDotScale={0.6}
+            activeOpacity={0.4}
+
           />
       );
   }
@@ -145,16 +143,20 @@ export class UserCard extends React.Component {
                     />
                     { this.pagination }
               </View>
-        <View style={{flexDirection:'row', marginLeft:10}}>
-        <View style={{flex:3}}>
-        <View style={[styles.footer,{flexDirection:'row'}]} pointerEvents='none'>
-          <Image style={styles.avatar} source={{uri:this.state.user.avatar}}/>
+        <View style={{flexDirection:'row', marginLeft:10, opacity:0.8}} pointerEvents='box-none'>
+        <View style={{flex:3}} pointerEvents='box-none'>
+        <TouchableOpacity>
+        <View style={[styles.footer,{flexDirection:'row'}]}>
+          <Image style={styles.avatar} source={{uri:this.state.user.avatar, cache:'force-cache'}} />
           <View>
             <Text style={styles.name}>{this.state.user.name}</Text>
             <Text style={styles.nick}>{'@'+this.state.user.nick}</Text>
           </View>
         </View>
+        </TouchableOpacity>
+        <View pointerEvents='none' >
           <Text style={styles.bio} numberOfLines={3}>{this.state.user.bio}</Text>
+          </View>
           </View>
             <View style={[styles.buttonsContainer,{flex:1}]}>
                   {/* <TouchableOpacity style={[styles.button,{opacity:this.state.opacityDeslike}]} onPress={()=>{this.handleDeslike()}}> 
@@ -278,17 +280,46 @@ const styles = StyleSheet.create(
       },
       footer:{
           paddingHorizontal:20,
-          paddingVertical:15, 
+ 
       },
       name:{
           fontSize:16,
           fontWeight:'bold',
           color:'#fdfdfd',
+          textShadowColor:'black',
+          textShadowOffset:{
+            height:2,
+            width:0
+          },
+          textShadowRadius:5,
+        
+          shadowRadius:5,
+          shadowColor:'black',
+          shadowOpacity:0.6,
+          shadowOffset:{
+            height:2,
+            width:0
+          }
       },
       nick:{
         color:'#fdfdfd',
+        fontWeight:'500',
+        textShadowColor:'black',
+        textShadowOffset:{
+          height:2,
+          width:0
+        },
+        textShadowRadius:5,
+        shadowRadius:5,
+        shadowColor:'black',
+        shadowOpacity:0.6,
+        shadowOffset:{
+          height:2,
+          width:0
+        }
       },
       bio:{
+        fontWeight:'400',
           fontSize:14,
           color:'white',
           padding:10,
